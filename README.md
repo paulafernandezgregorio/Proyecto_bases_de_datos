@@ -29,7 +29,7 @@ Las consideraciones éticas que se tienen que hacer con este dataset son las sig
 ## B) Carga Inicial y Análisis Exploratorio
 
 #### Ratings
-"La tabla 'ratings' contiene 26 millones de registros y representa 1.5 GB de datos, lo que genera problemas de rendimiento en las consultas. Dado que el objetivo del proyecto es analizar patrones en las características de las películas y no el comportamiento individual de los usuarios, se decidió excluir esta tabla del análisis."
+"La tabla ´ratings´ contiene 26 millones de registros y representa 1.5 GB de datos, lo que genera problemas de rendimiento en las consultas. Dado que el objetivo del proyecto es analizar patrones en las características de las películas y no el comportamiento individual de los usuarios, se decidió excluir esta tabla del análisis."
 
 ### Esquema inicial
 
