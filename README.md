@@ -32,7 +32,7 @@ Las consideraciones éticas que se tienen que hacer con este dataset son las sig
 
 Los datos se cargan en un esquema llamado `raw` dentro de la base de datos `peliculas`. Se utilizó un esquema separado para distinguir los datos en bruto de las tablas normalizadas que se crearán en etapas posteriores. Todos los atributos se definen como `TEXT` en la carga inicial para evitar errores de tipo durante la importación; la conversión a tipos adecuados se realiza en la etapa de limpieza.
 
-El script de creación del esquema se encuentra en `B_carga_inicial/01_create_schema.sql`.
+El script de creación del esquema se encuentra en `parteB/01_create_schema.sql`.
 
 ### Tablas cargadas
 
@@ -61,7 +61,7 @@ CREATE DATABASE peliculas;
 ```
 4. Ejecuta el script de creación del esquema:
 ```sql
-\i 'ruta/al/repo/B_carga_inicial/schema.sql'
+\i 'ruta/al/repo/parteB/schema.sql'
 ```
 5. Carga cada CSV con `\copy` (reemplaza `/ruta/` con la ruta real a tu carpeta de archivos):
 ```sql
@@ -78,7 +78,7 @@ CREATE DATABASE peliculas;
 
 ### Limpieza de columnas no relevantes
 
-Se eliminaron las columnas `profile_path` y `order` de `credits_cast`, y `profile_path` de `credits_crew`, ya que no aportan valor analítico. `profile_path` contiene rutas internas de imágenes no accesibles, y `order` representa el orden de aparición en pantalla, irrelevante para el análisis. El script correspondiente se encuentra en `B_carga_inicial/limpieza.sql`.
+Se eliminaron las columnas `profile_path` y `order` de `credits_cast`, y `profile_path` de `credits_crew`, ya que no aportan valor analítico. `profile_path` contiene rutas internas de imágenes no accesibles, y `order` representa el orden de aparición en pantalla, irrelevante para el análisis. El script correspondiente se encuentra en `parteB/limpieza.sql`.
 
 ### Análisis exploratorio
 
