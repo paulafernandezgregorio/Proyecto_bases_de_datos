@@ -52,7 +52,7 @@ Las siguientes 9 tablas fueron creadas y cargadas a partir de los archivos CSV d
 
 ### Instrucciones de replicación
 
-1. Descarga el dataset desde [Kaggle - The Movies Dataset](https://www.kaggle.com/datasets/rounakbanik/the-movie-dataset)
+1. Descarga el dataset desde [Kaggle - The Movies Dataset]([https://www.kaggle.com/datasets/rounakbanik/the-movie-dataset](https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset))
 2. Clona este repositorio
 3. Conéctate a PostgreSQL y crea la base de datos:
 ```sql
@@ -61,7 +61,7 @@ CREATE DATABASE peliculas;
 ```
 4. Ejecuta el script de creación del esquema:
 ```sql
-\i 'ruta/al/repo/B_carga_inicial/01_create_schema.sql'
+\i 'ruta/al/repo/B_carga_inicial/schema.sql'
 ```
 5. Carga cada CSV con `\copy` (reemplaza `/ruta/` con la ruta real a tu carpeta de archivos):
 ```sql
@@ -76,11 +76,9 @@ CREATE DATABASE peliculas;
 \copy raw.ratings FROM '/ruta/ratings.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
 ```
 
-> **Nota:** usar `\copy` (con backslash) y no `COPY`, ya que el primero opera desde el cliente y tiene acceso a los archivos locales.
-
 ### Limpieza de columnas no relevantes
 
-Se eliminaron las columnas `profile_path` y `order` de `credits_cast`, y `profile_path` de `credits_crew`, ya que no aportan valor analítico. `profile_path` contiene rutas internas de imágenes no accesibles, y `order` representa el orden de aparición en pantalla, irrelevante para el análisis. El script correspondiente se encuentra en `B_carga_inicial/02_limpieza_y_exploratorio.sql`.
+Se eliminaron las columnas `profile_path` y `order` de `credits_cast`, y `profile_path` de `credits_crew`, ya que no aportan valor analítico. `profile_path` contiene rutas internas de imágenes no accesibles, y `order` representa el orden de aparición en pantalla, irrelevante para el análisis. El script correspondiente se encuentra en `B_carga_inicial/limpieza.sql`.
 
 ### Análisis exploratorio
 
