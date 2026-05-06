@@ -1,0 +1,176 @@
+-- ============================================================
+-- PROYECTO FINAL - BASES DE DATOS
+-- Parte B: Carga Inicial
+-- Script 2: Limpieza de columnas innecesarias
+-- Se eliminan columnas que no aportan valor analítico:
+--   profile_path: rutas internas de imagen (no usables)
+--   order: orden de aparición en créditos (no relevante)
+--   gender en crew/cast: valor 0 = no especificado mayormente
+-- ============================================================
+
+
+-- ============================================================
+-- credits_cast: eliminar profile_path y order
+-- profile_path: URL interna de imagen del actor, no usable
+-- order: orden de aparición en pantalla, no relevante para análisis
+-- ============================================================
+ALTER TABLE raw.credits_cast
+    DROP COLUMN IF EXISTS profile_path,
+    DROP COLUMN IF EXISTS "order";
+
+
+-- ============================================================
+-- credits_crew: eliminar profile_path
+-- profile_path: URL interna de imagen del crew, no usable
+-- ============================================================
+ALTER TABLE raw.credits_crew
+    DROP COLUMN IF EXISTS profile_path;
+
+
+-- ============================================================
+-- VERIFICACIÓN: Confirmar columnas restantes en cada tabla
+-- ============================================================
+
+-- credits_cast debe quedar: movie_id, cast_id, character, credit_id, gender, actor_id, name
+SELECT column_name
+FROM information_schema.columns
+WHERE table_schema = 'raw'
+  AND table_name   = 'credits_cast'
+ORDER BY ordinal_position;
+
+-- credits_crew debe quedar: movie_id, credit_id, department, gender, person_id, job, name
+SELECT column_name
+FROM information_schema.columns
+WHERE table_schema = 'raw'
+  AND table_name   = 'credits_crew'
+ORDER BY ordinal_position;
+
+
+-- ============================================================
+-- ANÁLISIS EXPLORATORIO BÁSICO
+-- ============================================================
+
+-- Conteo de nulos en movies_metadata
+SELECT
+    COUNT(*) FILTER (WHERE adult            IS NULL OR adult = '')            AS nulos_adult,
+    COUNT(*) FILTER (WHERE budget           IS NULL OR budget = '')           AS nulos_budget,
+    COUNT(*) FILTER (WHERE movie_id         IS NULL OR movie_id = '')         AS nulos_movie_id,
+    COUNT(*) FILTER (WHERE imdb_id          IS NULL OR imdb_id = '')          AS nulos_imdb_id,
+    COUNT(*) FILTER (WHERE original_language IS NULL OR original_language = '') AS nulos_lang,
+    COUNT(*) FILTER (WHERE overview         IS NULL OR overview = '')         AS nulos_overview,
+    COUNT(*) FILTER (WHERE release_date     IS NULL OR release_date = '')     AS nulos_fecha,
+    COUNT(*) FILTER (WHERE runtime          IS NULL OR runtime = '')          AS nulos_runtime,
+    COUNT(*) FILTER (WHERE status           IS NULL OR status = '')           AS nulos_status,
+    COUNT(*) FILTER (WHERE title            IS NULL OR title = '')            AS nulos_title,
+    COUNT(*) FILTER (WHERE vote_average     IS NULL OR vote_average = '')     AS nulos_vote_avg,
+    COUNT(*) FILTER (WHERE vote_count       IS NULL OR vote_count = '')       AS nulos_vote_count
+FROM raw.movies_metadata;
+
+-- Rango de fechas
+SELECT
+    MIN(release_date::DATE) AS fecha_minima,
+    MAX(release_date::DATE) AS fecha_maxima
+FROM raw.movies_metadata
+WHERE release_date ~ '^\d{4}-\d{2}-\d{2}$';
+
+-- Estadísticas numéricas de movies_metadata
+SELECT
+    MIN(budget::NUMERIC)        AS budget_min,
+    MAX(budget::NUMERIC)        AS budget_max,
+    ROUND(AVG(budget::NUMERIC)) AS budget_avg,
+    MIN(revenue::NUMERIC)       AS revenue_min,
+    MAX(revenue::NUMERIC)       AS revenue_max,
+    ROUND(AVG(revenue::NUMERIC))AS revenue_avg,
+    MIN(runtime::NUMERIC)       AS runtime_min,
+    MAX(runtime::NUMERIC)       AS runtime_max,
+    ROUND(AVG(runtime::NUMERIC))AS runtime_avg,
+    MIN(vote_average::NUMERIC)  AS vote_avg_min,
+    MAX(vote_average::NUMERIC)  AS vote_avg_max,
+    ROUND(AVG(vote_average::NUMERIC), 2) AS vote_avg_prom
+FROM raw.movies_metadata
+WHERE budget      ~ '^\d+(\.\d+)?$'
+  AND revenue     ~ '^\d+(\.\d+)?$'
+  AND runtime     ~ '^\d+(\.\d+)?$'
+  AND vote_average~ '^\d+(\.\d+)?$';
+
+-- Películas con budget o revenue = 0 (datos faltantes disfrazados)
+SELECT
+    COUNT(*) FILTER (WHERE budget = '0')  AS peliculas_budget_cero,
+    COUNT(*) FILTER (WHERE revenue = '0') AS peliculas_revenue_cero,
+    COUNT(*) FILTER (WHERE runtime = '0') AS peliculas_runtime_cero
+FROM raw.movies_metadata;
+
+-- IDs únicos vs duplicados en movies_metadata
+SELECT
+    COUNT(*)             AS total,
+    COUNT(DISTINCT movie_id) AS ids_unicos,
+    COUNT(*) - COUNT(DISTINCT movie_id) AS ids_duplicados
+FROM raw.movies_metadata;
+
+-- Distribución por idioma original
+SELECT original_language, COUNT(*) AS total
+FROM raw.movies_metadata
+GROUP BY original_language
+ORDER BY total DESC
+LIMIT 15;
+
+-- Distribución por estatus de la película
+SELECT status, COUNT(*) AS total
+FROM raw.movies_metadata
+GROUP BY status
+ORDER BY total DESC;
+
+-- Géneros más frecuentes
+SELECT name AS genero, COUNT(*) AS total_peliculas
+FROM raw.movies_metadata_genres
+GROUP BY name
+ORDER BY total_peliculas DESC
+LIMIT 15;
+
+-- Países productores más frecuentes
+SELECT name AS pais, COUNT(*) AS total
+FROM raw.movies_metadata_production_countries
+GROUP BY name
+ORDER BY total DESC
+LIMIT 10;
+
+-- Compañías productoras más frecuentes
+SELECT name AS compania, COUNT(*) AS total
+FROM raw.movies_metadata_production_companies
+GROUP BY name
+ORDER BY total DESC
+LIMIT 10;
+
+-- Distribución de calificaciones de usuarios
+SELECT rating, COUNT(*) AS cantidad
+FROM raw.ratings
+GROUP BY rating
+ORDER BY rating::NUMERIC;
+
+-- Estadísticas de ratings
+SELECT
+    MIN(rating::NUMERIC)        AS rating_min,
+    MAX(rating::NUMERIC)        AS rating_max,
+    ROUND(AVG(rating::NUMERIC), 2) AS rating_avg,
+    COUNT(*)                    AS total_ratings,
+    COUNT(DISTINCT user_id)     AS usuarios_unicos,
+    COUNT(DISTINCT movie_id)    AS peliculas_calificadas
+FROM raw.ratings;
+
+-- Rango temporal de ratings (unix timestamp a fecha)
+SELECT
+    TO_TIMESTAMP(MIN(timestamp::BIGINT)) AS fecha_minima,
+    TO_TIMESTAMP(MAX(timestamp::BIGINT)) AS fecha_maxima
+FROM raw.ratings;
+
+-- Inconsistencias entre tablas: películas en ratings sin link
+SELECT COUNT(DISTINCT r.movie_id) AS ratings_sin_link
+FROM raw.ratings r
+WHERE r.movie_id NOT IN (SELECT movie_id FROM raw.links);
+
+-- Keywords más frecuentes
+SELECT name AS keyword, COUNT(*) AS total
+FROM raw.keywords_keywords
+GROUP BY name
+ORDER BY total DESC
+LIMIT 15;
