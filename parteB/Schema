@@ -1,0 +1,173 @@
+-- ============================================================
+-- PROYECTO FINAL - BASES DE DATOS
+-- Parte B: Carga Inicial
+-- Dataset: The Movies Dataset (Kaggle - Rounak Banik)
+-- Script 1: Creación del esquema inicial (tablas en bruto)
+-- Todos los campos como TEXT para carga sin restricciones
+-- ============================================================
+
+CREATE SCHEMA IF NOT EXISTS raw;
+
+-- ============================================================
+-- 1. movies_metadata
+-- ============================================================
+DROP TABLE IF EXISTS raw.movies_metadata CASCADE;
+
+CREATE TABLE raw.movies_metadata (
+    adult               TEXT,
+    budget              TEXT,
+    movie_id            TEXT,
+    imdb_id             TEXT,
+    original_language   TEXT,
+    original_title      TEXT,
+    overview            TEXT,
+    popularity          TEXT,
+    release_date        TEXT,
+    revenue             TEXT,
+    runtime             TEXT,
+    status              TEXT,
+    tagline             TEXT,
+    title               TEXT,
+    vote_average        TEXT,
+    vote_count          TEXT
+);
+
+-- ============================================================
+-- 2. movies_metadata_genres
+-- ============================================================
+DROP TABLE IF EXISTS raw.movies_metadata_genres CASCADE;
+
+CREATE TABLE raw.movies_metadata_genres (
+    movie_id    TEXT,
+    genre_id    TEXT,
+    name        TEXT
+);
+
+-- ============================================================
+-- 3. movies_metadata_production_companies
+-- ============================================================
+DROP TABLE IF EXISTS raw.movies_metadata_production_companies CASCADE;
+
+CREATE TABLE raw.movies_metadata_production_companies (
+    movie_id    TEXT,
+    name        TEXT,
+    company_id  TEXT
+);
+
+-- ============================================================
+-- 4. movies_metadata_production_countries
+-- ============================================================
+DROP TABLE IF EXISTS raw.movies_metadata_production_countries CASCADE;
+
+CREATE TABLE raw.movies_metadata_production_countries (
+    movie_id    TEXT,
+    iso_3166_1  TEXT,
+    name        TEXT
+);
+
+-- ============================================================
+-- 5. credits_cast
+-- Nota: "order" va entre comillas por ser palabra reservada en SQL
+-- ============================================================
+DROP TABLE IF EXISTS raw.credits_cast CASCADE;
+
+CREATE TABLE raw.credits_cast (
+    movie_id        TEXT,
+    cast_id         TEXT,
+    character       TEXT,
+    credit_id       TEXT,
+    gender          TEXT,
+    actor_id        TEXT,
+    name            TEXT,
+    "order"         TEXT,
+    profile_path    TEXT
+);
+
+-- ============================================================
+-- 6. credits_crew
+-- ============================================================
+DROP TABLE IF EXISTS raw.credits_crew CASCADE;
+
+CREATE TABLE raw.credits_crew (
+    movie_id        TEXT,
+    credit_id       TEXT,
+    department      TEXT,
+    gender          TEXT,
+    person_id       TEXT,
+    job             TEXT,
+    name            TEXT,
+    profile_path    TEXT
+);
+
+-- ============================================================
+-- 7. keywords_keywords
+-- ============================================================
+DROP TABLE IF EXISTS raw.keywords_keywords CASCADE;
+
+CREATE TABLE raw.keywords_keywords (
+    movie_id    TEXT,
+    keyword_id  TEXT,
+    name        TEXT
+);
+
+-- ============================================================
+-- 8. links
+-- ============================================================
+DROP TABLE IF EXISTS raw.links CASCADE;
+
+CREATE TABLE raw.links (
+    movie_id    TEXT,
+    imdbid      TEXT,
+    tmdbid      TEXT
+);
+
+-- ============================================================
+-- 9. ratings
+-- ============================================================
+DROP TABLE IF EXISTS raw.ratings CASCADE;
+
+CREATE TABLE raw.ratings (
+    user_id     TEXT,
+    movie_id    TEXT,
+    rating      TEXT,
+    timestamp   TEXT
+);
+
+
+-- ============================================================
+-- CARGA DE DATOS CON \COPY
+-- Ejecutar desde terminal psql, NO desde TablePlus
+-- Reemplaza '/ruta/' con la ruta real de tu carpeta de archivos
+-- ============================================================
+
+-- \copy raw.movies_metadata FROM '/ruta/movies_metadata.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
+-- \copy raw.movies_metadata_genres FROM '/ruta/movies_metadata_genres.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
+-- \copy raw.movies_metadata_production_companies FROM '/ruta/movies_metadata_production_companies.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
+-- \copy raw.movies_metadata_production_countries FROM '/ruta/movies_metadata_production_countries.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
+-- \copy raw.credits_cast FROM '/ruta/credits_cast.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
+-- \copy raw.credits_crew FROM '/ruta/credits_crew.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
+-- \copy raw.keywords_keywords FROM '/ruta/keywords_keywords.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
+-- \copy raw.links FROM '/ruta/links.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
+-- \copy raw.ratings FROM '/ruta/ratings.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
+
+
+-- ============================================================
+-- VERIFICACIÓN: Conteo de registros por tabla
+-- ============================================================
+SELECT 'movies_metadata'                        AS tabla, COUNT(*) AS registros FROM raw.movies_metadata
+UNION ALL
+SELECT 'movies_metadata_genres',                               COUNT(*) FROM raw.movies_metadata_genres
+UNION ALL
+SELECT 'movies_metadata_production_companies',                 COUNT(*) FROM raw.movies_metadata_production_companies
+UNION ALL
+SELECT 'movies_metadata_production_countries',                 COUNT(*) FROM raw.movies_metadata_production_countries
+UNION ALL
+SELECT 'credits_cast',                                         COUNT(*) FROM raw.credits_cast
+UNION ALL
+SELECT 'credits_crew',                                         COUNT(*) FROM raw.credits_crew
+UNION ALL
+SELECT 'keywords_keywords',                                    COUNT(*) FROM raw.keywords_keywords
+UNION ALL
+SELECT 'links',                                                COUNT(*) FROM raw.links
+UNION ALL
+SELECT 'ratings',                                              COUNT(*) FROM raw.ratings;
