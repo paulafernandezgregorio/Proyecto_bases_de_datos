@@ -30,6 +30,7 @@ Las consideraciones éticas que se tienen que hacer con este dataset son las sig
 
 #### Ratings
 "La tabla ´ratings´ contiene 26 millones de registros y representa 1.5 GB de datos, lo que genera problemas de rendimiento en las consultas. Dado que el objetivo del proyecto es analizar patrones en las características de las películas y no el comportamiento individual de los usuarios, se decidió excluir esta tabla del análisis."
+*ratings y links fueron excluidos del proyecto por tamaño (26M registros, 1.5GB). El objetivo es analizar patrones en características de películas, no en comportamiento de usuarios.*
 
 ### Esquema inicial
 
