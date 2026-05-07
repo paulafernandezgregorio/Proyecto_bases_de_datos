@@ -96,6 +96,16 @@ Se eliminaron las columnas `profile_path` y `order` de `credits_cast`, y `profil
 
 La columna con más datos faltantes es `overview` con 954 registros sin descripción.
 
+#### Estadísticas de valores numéricos
+
+| Métrica | Budget | Revenue | Runtime | Vote Average |
+|---------|--------|---------|---------|--------------|
+| Mínimo | $1 | $1 | 0.0 min | 0.0 |
+| Máximo | $380,000,000 | $2,787,965,087 | 338.0 min | 9.1 |
+| Promedio | $31,112,688 | $90,408,636 | 110 min | 6.27 |
+
+> Nota: estos valores excluyen registros con budget, revenue o runtime igual a NULL (previamente convertidos desde cero).
+
 #### Valores en cero (datos faltantes disfrazados)
 
 Un hallazgo importante es que una gran proporción de películas tienen `budget` y `revenue` registrados como `0`, lo que en realidad representa datos no disponibles:
@@ -149,3 +159,59 @@ El 71% de las películas son en inglés. Se detectó el código `cn` que no es u
 | Thriller | 7,624 |
 | Romance | 6,735 |
 | Action | 6,596 |
+
+---
+
+## C) Limpieza de Datos
+
+El objetivo de la limpieza es preparar los datos para el análisis de patrones y sesgos en películas. El script completo se encuentra en `parteC/limpieza_datos.sql`.
+
+### Actividades realizadas
+
+#### 1. Eliminación de duplicados y registros sin identificador
+
+Se encontraron 33 registros con `movie_id` duplicado y 1 registro sin `movie_id`. En ambos casos no es posible identificar de forma única a qué película pertenece la información, por lo que fueron eliminados. Para los duplicados se conservó únicamente la primera aparición de cada película.
+
+#### 2. Conversión de budget y revenue de 0 a NULL
+
+Esta es la operación más importante de la limpieza. En el dataset original, cuando no se conoce el presupuesto (`budget`) o los ingresos (`revenue`) de una película, el valor aparece registrado como `0` en lugar de estar vacío. Esto es problemático porque un `0` parece un dato válido cuando en realidad significa "dato no disponible". Si no se corrige, cualquier cálculo de promedios o análisis financiero estaría completamente distorsionado. Por esta razón, todos los valores `0` en estas columnas fueron convertidos a `NULL`.
+
+#### 3. Corrección de código de idioma inválido
+
+Se encontró el código de idioma `cn` que no existe en el estándar ISO 639-1 de idiomas. El idioma chino se representa correctamente como `zh`. Se corrigieron todos los registros afectados.
+
+#### 4. Eliminación de películas sin estatus
+
+Se eliminaron 87 registros donde la columna `status` era NULL o estaba vacía. Sin saber si una película fue estrenada o no, no es posible incluirla en un análisis de películas exitosas.
+
+#### 5. Conversión de runtime inválido a NULL
+
+Una duración de 0 minutos no es un valor válido para una película. Estos valores fueron convertidos a NULL para no afectar los cálculos de duración promedio.
+
+#### 6. Eliminación de fechas con formato inválido
+
+Se eliminaron registros con fechas que no siguen el formato estándar `YYYY-MM-DD`, ya que no pueden ser procesadas correctamente en consultas temporales. Las fechas vacías fueron convertidas a NULL.
+
+#### 7. Eliminación de valores inválidos en la columna adult
+
+La columna `adult` solo debe contener `'True'` o `'False'`. Cualquier otro valor indica un error en los datos originales y fue eliminado.
+
+#### 8. Eliminación de registros huérfanos en tablas secundarias
+
+Un registro huérfano es aquel que hace referencia a una película que ya no existe en `movies_metadata` — porque fue eliminada en los pasos anteriores. Estos registros son inútiles sin su película de referencia, por lo que fueron eliminados de todas las tablas secundarias: `credits_cast`, `credits_crew`, `movies_metadata_genres`, `movies_metadata_production_companies`, `movies_metadata_production_countries` y `keywords_keywords`.
+
+#### 9. Eliminación de duplicados en tablas secundarias
+
+Se eliminaron casos donde la misma película tenía el mismo género, país, compañía o keyword registrado más de una vez, conservando únicamente la primera aparición.
+
+### Resultado de la limpieza
+
+| Tabla | Antes | Después |
+|-------|-------|---------|
+| movies_metadata | 45,466 | 45,349 |
+| movies_metadata_genres | 91,106 | 90,911 |
+| movies_metadata_production_companies | 70,545 | 70,458 |
+| movies_metadata_production_countries | 49,423 | 49,332 |
+| credits_cast | 562,474 | 562,152 |
+| credits_crew | 464,314 | 464,079 |
+| keywords_keywords | 158,680 | 156,559 |
