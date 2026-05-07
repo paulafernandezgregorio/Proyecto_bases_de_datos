@@ -1,0 +1,106 @@
+-- ============================================================
+-- 				PROYECTO FINAL - BASES DE DATOS
+-- Parte B: Carga Inicial
+-- Nota: Ratings y links fueron excluidos del proyecto por 
+--       tamaño (26M registros, 1.5GB). El objetivo es analizar 
+--       patrones en características de películas, 
+--       no en comportamiento de usuarios.*
+-- ============================================================
+
+CREATE SCHEMA IF NOT EXISTS raw;
+
+-- ============================================================
+-- 1. movies_metadata
+-- ============================================================
+DROP TABLE IF EXISTS raw.movies_metadata CASCADE;
+
+CREATE TABLE raw.movies_metadata (
+    adult               TEXT,
+    budget              TEXT,
+    movie_id            TEXT,
+    imdb_id             TEXT,
+    original_language   TEXT,
+    original_title      TEXT,
+    overview            TEXT,
+    popularity          TEXT,
+    release_date        TEXT,
+    revenue             TEXT,
+    runtime             TEXT,
+    status              TEXT,
+    vote_average        TEXT,
+    vote_count          TEXT
+);
+
+-- ============================================================
+-- 2. movies_metadata_genres
+-- ============================================================
+DROP TABLE IF EXISTS raw.movies_metadata_genres CASCADE;
+
+CREATE TABLE raw.movies_metadata_genres (
+    movie_id    TEXT,
+    genre_id    TEXT,
+    name        TEXT
+);
+
+-- ============================================================
+-- 3. movies_metadata_production_companies
+-- ============================================================
+DROP TABLE IF EXISTS raw.movies_metadata_production_companies CASCADE;
+
+CREATE TABLE raw.movies_metadata_production_companies (
+    movie_id    TEXT,
+    name        TEXT,
+    company_id  TEXT
+);
+
+-- ============================================================
+-- 4. movies_metadata_production_countries
+-- ============================================================
+DROP TABLE IF EXISTS raw.movies_metadata_production_countries CASCADE;
+
+CREATE TABLE raw.movies_metadata_production_countries (
+    movie_id    TEXT,
+    iso_3166_1  TEXT,
+    name        TEXT
+);
+
+-- ============================================================
+-- 5. credits_cast
+-- ============================================================
+DROP TABLE IF EXISTS raw.credits_cast CASCADE;
+
+CREATE TABLE raw.credits_cast (
+    movie_id    TEXT,
+    cast_id     TEXT,
+    character   TEXT,
+    credit_id   TEXT,
+    gender      TEXT,
+    actor_id    TEXT,
+    name        TEXT
+);
+
+-- ============================================================
+-- 6. credits_crew
+-- ============================================================
+DROP TABLE IF EXISTS raw.credits_crew CASCADE;
+
+CREATE TABLE raw.credits_crew (
+    movie_id    TEXT,
+    credit_id   TEXT,
+    department  TEXT,
+    gender      TEXT,
+    person_id   TEXT,
+    job         TEXT,
+    name        TEXT
+);
+
+-- ============================================================
+-- 7. keywords_keywords
+-- ============================================================
+DROP TABLE IF EXISTS raw.keywords_keywords CASCADE;
+
+CREATE TABLE raw.keywords_keywords (
+    movie_id    TEXT,
+    keyword_id  TEXT,
+    name        TEXT
+);
