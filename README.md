@@ -28,35 +28,33 @@ Las consideraciones éticas que se tienen que hacer con este dataset son las sig
 
 ## B) Carga Inicial y Análisis Exploratorio
 
-#### Ratings
-"La tabla ´ratings´ contiene 26 millones de registros y representa 1.5 GB de datos, lo que genera problemas de rendimiento en las consultas. Dado que el objetivo del proyecto es analizar patrones en las características de las películas y no el comportamiento individual de los usuarios, se decidió excluir esta tabla del análisis."
-*ratings y links fueron excluidos del proyecto por tamaño (26M registros, 1.5GB). El objetivo es analizar patrones en características de películas, no en comportamiento de usuarios.*
+### Decisión sobre ratings y links
+
+Durante la exploración inicial del dataset se identificó que la tabla `ratings` contiene más de 26 millones de registros y ocupa 1.5 GB de espacio en disco. Al intentar ejecutar consultas sobre esta tabla, el sistema presentaba problemas severos de rendimiento, haciendo inviable su uso en el análisis. Dado que el objetivo del proyecto es identificar patrones en las **características propias de las películas** — como género, presupuesto, duración y popularidad — y no en el comportamiento individual de los usuarios, se tomó la decisión de excluir esta tabla del proyecto. La tabla `links`, cuya única función era relacionar películas con sus calificaciones en plataformas externas, también fue excluida por la misma razón.
 
 ### Esquema inicial
 
 Los datos se cargan en un esquema llamado `raw` dentro de la base de datos `peliculas`. Se utilizó un esquema separado para distinguir los datos en bruto de las tablas normalizadas que se crearán en etapas posteriores. Todos los atributos se definen como `TEXT` en la carga inicial para evitar errores de tipo durante la importación; la conversión a tipos adecuados se realiza en la etapa de limpieza.
 
-El script de creación del esquema se encuentra en `parteB/01_create_schema.sql`.
+El script de creación del esquema se encuentra en `parteB/schema.sql`.
 
 ### Tablas cargadas
 
-Las siguientes 9 tablas fueron creadas y cargadas a partir de los archivos CSV del dataset:
+Las siguientes 7 tablas fueron creadas y cargadas a partir de los archivos CSV del dataset:
 
 | Tabla | Descripción | Registros |
 |-------|-------------|-----------|
-| `movies_metadata` | Información general de cada película | 45,466 |
-| `movies_metadata_genres` | Géneros asociados a cada película | 91,106 |
-| `movies_metadata_production_companies` | Compañías productoras por película | 70,545 |
-| `movies_metadata_production_countries` | Países de producción por película | 49,423 |
-| `credits_cast` | Actores y personajes por película | 562,474 |
-| `credits_crew` | Equipo técnico por película | 464,314 |
-| `keywords_keywords` | Palabras clave por película | 158,680 |
-| `links` | IDs de películas en IMDb y TMDb | 45,843 |
-| `ratings` | Calificaciones de usuarios | 26,024,289 |
+| `movies_metadata` | Información general de cada película | 45,349 |
+| `movies_metadata_genres` | Géneros asociados a cada película | 90,911 |
+| `movies_metadata_production_companies` | Compañías productoras por película | 70,458 |
+| `movies_metadata_production_countries` | Países de producción por película | 49,332 |
+| `credits_cast` | Actores y personajes por película | 562,152 |
+| `credits_crew` | Equipo técnico por película | 464,079 |
+| `keywords_keywords` | Palabras clave por película | 156,559 |
 
 ### Instrucciones de replicación
 
-1. Descarga el dataset desde [Kaggle - The Movies Dataset]([https://www.kaggle.com/datasets/rounakbanik/the-movie-dataset](https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset))
+1. Descarga el dataset desde [Kaggle - The Movies Dataset](https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset)
 2. Clona este repositorio
 3. Conéctate a PostgreSQL y crea la base de datos:
 ```sql
@@ -76,8 +74,6 @@ CREATE DATABASE peliculas;
 \copy raw.credits_cast FROM '/ruta/credits_cast.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
 \copy raw.credits_crew FROM '/ruta/credits_crew.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
 \copy raw.keywords_keywords FROM '/ruta/keywords_keywords.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
-\copy raw.links FROM '/ruta/links.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
-\copy raw.ratings FROM '/ruta/ratings.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
 ```
 
 ### Limpieza de columnas no relevantes
@@ -110,11 +106,11 @@ Un hallazgo importante es que una gran proporción de películas tienen `budget`
 | revenue | 38,052 | ~84% |
 | runtime | 0 | 0% |
 
-Estos valores deberán tratarse como nulos durante la limpieza.
+Estos valores fueron tratados como nulos durante la limpieza.
 
 #### IDs duplicados
 
-De los 45,466 registros en `movies_metadata`, se encontraron **33 IDs duplicados**, los cuales deberán eliminarse en la etapa de limpieza.
+De los 45,466 registros originales en `movies_metadata`, se encontraron **33 IDs duplicados** y **1 registro sin movie_id**, los cuales fueron eliminados en la etapa de limpieza.
 
 #### Rango de fechas
 
@@ -130,7 +126,7 @@ Las películas abarcan desde **1874-12-09** hasta **2020-12-16**, con la mayorí
 | Japonés (ja) | 1,350 |
 | Alemán (de) | 1,080 |
 
-El 71% de las películas son en inglés. Se detectó el código `cn` que no es un código ISO válido (debería ser `zh`), lo cual se corregirá en la limpieza.
+El 71% de las películas son en inglés. Se detectó el código `cn` que no es un código ISO válido (debería ser `zh`), lo cual fue corregido en la limpieza.
 
 #### Distribución por estatus
 
@@ -153,18 +149,3 @@ El 71% de las películas son en inglés. Se detectó el código `cn` que no es u
 | Thriller | 7,624 |
 | Romance | 6,735 |
 | Action | 6,596 |
-
-#### Estadísticas de calificaciones de usuarios
-
-| Métrica | Valor |
-|---------|-------|
-| Rating mínimo | 0.5 |
-| Rating máximo | 5.0 |
-| Rating promedio | 3.53 |
-| Usuarios únicos | 270,896 |
-| Películas calificadas | 45,115 |
-| Período cubierto | 1995-01-09 a 2017-08-04 |
-
-#### Inconsistencias entre tablas
-
-Se verificó que todas las películas con calificaciones en `ratings` tienen su correspondiente entrada en `links`, con **0 registros huérfanos**, lo que indica buena integridad referencial entre estas dos tablas.
