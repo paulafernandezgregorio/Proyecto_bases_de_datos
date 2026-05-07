@@ -96,6 +96,16 @@ Se eliminaron las columnas `profile_path` y `order` de `credits_cast`, y `profil
 
 La columna con más datos faltantes es `overview` con 954 registros sin descripción.
 
+#### Estadísticas de valores numéricos
+
+| Métrica | Budget | Revenue | Runtime | Vote Average |
+|---------|--------|---------|---------|--------------|
+| Mínimo | $1 | $1 | 0.0 min | 0.0 |
+| Máximo | $380,000,000 | $2,787,965,087 | 338.0 min | 9.1 |
+| Promedio | $31,112,688 | $90,408,636 | 110 min | 6.27 |
+
+> Nota: estos valores excluyen registros con budget, revenue o runtime igual a NULL (previamente convertidos desde cero).
+
 #### Valores en cero (datos faltantes disfrazados)
 
 Un hallazgo importante es que una gran proporción de películas tienen `budget` y `revenue` registrados como `0`, lo que en realidad representa datos no disponibles:
