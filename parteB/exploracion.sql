@@ -32,51 +32,46 @@ UNION ALL SELECT 'keywords_keywords',                     COUNT(*) FROM raw.keyw
 
 -- Valores nulos por columna en movies_metadata
 SELECT
-    COUNT(*) FILTER (WHERE adult             IS NULL OR adult = '')             AS nulos_adult,
-    COUNT(*) FILTER (WHERE budget            IS NULL OR budget = '')            AS nulos_budget,
-    COUNT(*) FILTER (WHERE movie_id          IS NULL OR movie_id = '')          AS nulos_movie_id,
+    COUNT(*) FILTER (WHERE adult             IS NULL)                           AS nulos_adult,
+    COUNT(*) FILTER (WHERE budget            IS NULL)                           AS nulos_budget,
+    COUNT(*) FILTER (WHERE movie_id          IS NULL)                           AS nulos_movie_id,
     COUNT(*) FILTER (WHERE imdb_id           IS NULL OR imdb_id = '')           AS nulos_imdb_id,
     COUNT(*) FILTER (WHERE original_language IS NULL OR original_language = '') AS nulos_lang,
     COUNT(*) FILTER (WHERE overview          IS NULL OR overview = '')          AS nulos_overview,
-    COUNT(*) FILTER (WHERE release_date      IS NULL OR release_date = '')      AS nulos_fecha,
-    COUNT(*) FILTER (WHERE runtime           IS NULL OR runtime = '')           AS nulos_runtime,
+    COUNT(*) FILTER (WHERE release_date      IS NULL)                           AS nulos_fecha,
+    COUNT(*) FILTER (WHERE runtime           IS NULL)                           AS nulos_runtime,
     COUNT(*) FILTER (WHERE status            IS NULL OR status = '')            AS nulos_status,
-    COUNT(*) FILTER (WHERE vote_average      IS NULL OR vote_average = '')      AS nulos_vote_avg,
-    COUNT(*) FILTER (WHERE vote_count        IS NULL OR vote_count = '')        AS nulos_vote_count
+    COUNT(*) FILTER (WHERE vote_average      IS NULL)                           AS nulos_vote_avg,
+    COUNT(*) FILTER (WHERE vote_count        IS NULL)                           AS nulos_vote_count
 FROM raw.movies_metadata;
 
 -- Rango de fechas
 SELECT
-    MIN(release_date::DATE) AS fecha_minima,
-    MAX(release_date::DATE) AS fecha_maxima
-FROM raw.movies_metadata
-WHERE release_date ~ '^\d{4}-\d{2}-\d{2}$';
+    MIN(release_date) AS fecha_minima,
+    MAX(release_date) AS fecha_maxima
+FROM raw.movies_metadata;
 
 -- Estadísticas numéricas
 SELECT
-    MIN(budget::NUMERIC)                 AS budget_min,
-    MAX(budget::NUMERIC)                 AS budget_max,
-    ROUND(AVG(budget::NUMERIC))          AS budget_avg,
-    MIN(revenue::NUMERIC)                AS revenue_min,
-    MAX(revenue::NUMERIC)                AS revenue_max,
-    ROUND(AVG(revenue::NUMERIC))         AS revenue_avg,
-    MIN(runtime::NUMERIC)                AS runtime_min,
-    MAX(runtime::NUMERIC)                AS runtime_max,
-    ROUND(AVG(runtime::NUMERIC))         AS runtime_avg,
-    MIN(vote_average::NUMERIC)           AS vote_avg_min,
-    MAX(vote_average::NUMERIC)           AS vote_avg_max,
-    ROUND(AVG(vote_average::NUMERIC), 2) AS vote_avg_prom
-FROM raw.movies_metadata
-WHERE budget       ~ '^\d+(\.\d+)?$'
-  AND revenue      ~ '^\d+(\.\d+)?$'
-  AND runtime      ~ '^\d+(\.\d+)?$'
-  AND vote_average ~ '^\d+(\.\d+)?$';
+    MIN(budget)                    AS budget_min,
+    MAX(budget)                    AS budget_max,
+    ROUND(AVG(budget))             AS budget_avg,
+    MIN(revenue)                   AS revenue_min,
+    MAX(revenue)                   AS revenue_max,
+    ROUND(AVG(revenue))            AS revenue_avg,
+    MIN(runtime)                   AS runtime_min,
+    MAX(runtime)                   AS runtime_max,
+    ROUND(AVG(runtime))            AS runtime_avg,
+    MIN(vote_average)              AS vote_avg_min,
+    MAX(vote_average)              AS vote_avg_max,
+    ROUND(AVG(vote_average)::numeric, 2)    AS vote_avg_prom
+FROM raw.movies_metadata;
 
 -- Películas con budget o revenue = 0 (datos faltantes)
 SELECT
-    COUNT(*) FILTER (WHERE budget = '0')  AS budget_cero,
-    COUNT(*) FILTER (WHERE revenue = '0') AS revenue_cero,
-    COUNT(*) FILTER (WHERE runtime = '0') AS runtime_cero
+    COUNT(*) FILTER (WHERE budget = 0)  AS budget_cero,
+    COUNT(*) FILTER (WHERE revenue = 0) AS revenue_cero,
+    COUNT(*) FILTER (WHERE runtime = 0) AS runtime_cero
 FROM raw.movies_metadata;
 
 -- IDs duplicados
