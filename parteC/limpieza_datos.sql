@@ -1,4 +1,4 @@
-﻿-- LIMPIEZA DE DATOS
+-- LIMPIEZA DE DATOS
 
 -- Antes de la limpieza
 SELECT 'movies_metadata' AS tabla, COUNT(*) FROM raw.movies_metadata
