@@ -36,12 +36,15 @@ EXPLODE_COLUMNS = {
 
 # renombres de llaves internas de diccionarios por tabla/columna explotada
 DICT_KEY_RENAMES = {
-    ("credits.csv", "cast"): {"id": "actor_id"},
+    ("credits.csv", "cast"): {"id": "person_id"},
     ("credits.csv", "crew"): {"id": "person_id"},
     ("keywords.csv", "keywords"): {"id": "keyword_id"},
     ("movies_metadata.csv", "genres"): {"id": "genre_id"},
     ("movies_metadata.csv", "production_companies"): {"id": "company_id"},
 }
+
+
+SKIP_BASE_TABLES = {"credits.csv", "keywords.csv"}
 
 
 def parse_list_of_dicts(cell: object) -> list[dict]:
@@ -166,7 +169,8 @@ def transform_file(csv_path: Path) -> Iterable[tuple[str, pd.DataFrame]]:
         if "movie_id" in base_df.columns:
             base_df["movie_id"] = pd.to_numeric(base_df["movie_id"], errors="coerce").astype("Int64")
 
-    yield file_name, base_df
+    if file_name not in SKIP_BASE_TABLES:
+        yield file_name, base_df
 
 
 def main() -> None:
