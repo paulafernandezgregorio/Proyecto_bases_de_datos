@@ -99,7 +99,13 @@ def explode_to_table(
             rows.append(new_row)
     if not rows:
         return pd.DataFrame(columns=[parent_id_output_col])
-    return pd.DataFrame(rows)
+    result = pd.DataFrame(rows)
+
+    if parent_id_output_col in result.columns:
+        result[parent_id_output_col] = pd.to_numeric(result[parent_id_output_col], errors="coerce").astype("Int64")
+        result = result[result[parent_id_output_col].notna()].copy()
+
+    return result
 
 
 def normalize_movies_metadata(df: pd.DataFrame) -> pd.DataFrame:
