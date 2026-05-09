@@ -121,3 +121,47 @@ FROM raw.keywords_keywords
 GROUP BY name
 ORDER BY total DESC
 LIMIT 15;
+
+-- Personas con multiples nombres en credits_cast
+SELECT
+    person_id,
+    COUNT(DISTINCT name) AS total_nombres,
+    STRING_AGG(DISTINCT name, ' | ' ORDER BY name) AS nombres
+FROM raw.credits_cast
+WHERE person_id IS NOT NULL
+GROUP BY person_id
+HAVING COUNT(DISTINCT name) > 1
+ORDER BY total_nombres DESC, person_id;
+
+-- Personas con multiples nombres en credits_crew
+SELECT
+    person_id,
+    COUNT(DISTINCT name) AS total_nombres,
+    STRING_AGG(DISTINCT name, ' | ' ORDER BY name) AS nombres
+FROM raw.credits_crew
+WHERE person_id IS NOT NULL
+GROUP BY person_id
+HAVING COUNT(DISTINCT name) > 1
+ORDER BY total_nombres DESC, person_id;
+
+-- Personas con multiples generos en credits_cast
+SELECT
+    person_id,
+    COUNT(DISTINCT gender) AS total_generos,
+    STRING_AGG(DISTINCT gender::text, ' | ' ORDER BY gender::text) AS generos
+FROM raw.credits_cast
+WHERE person_id IS NOT NULL
+GROUP BY person_id
+HAVING COUNT(DISTINCT gender) > 1
+ORDER BY total_generos DESC, person_id;
+
+-- Personas con multiples generos en credits_crew
+SELECT
+    person_id,
+    COUNT(DISTINCT gender) AS total_generos,
+    STRING_AGG(DISTINCT gender::text, ' | ' ORDER BY gender::text) AS generos
+FROM raw.credits_crew
+WHERE person_id IS NOT NULL
+GROUP BY person_id
+HAVING COUNT(DISTINCT gender) > 1
+ORDER BY total_generos DESC, person_id;
