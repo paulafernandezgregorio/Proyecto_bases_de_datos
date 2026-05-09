@@ -12,7 +12,7 @@ DATA_DIR = BASE_DIR / "data"
 OUTPUT_DIR = DATA_DIR / "final"
 
 
-IGNORE_FILES = {"links_small.csv", "ratings_small.csv"}
+IGNORE_FILES = {"links_small.csv", "ratings_small.csv","links.csv","ratings.csv"}
 
 # columnas a eliminar explicitamente de la tabla base
 DROP_COLUMNS = {
@@ -159,16 +159,6 @@ def transform_file(csv_path: Path) -> Iterable[tuple[str, pd.DataFrame]]:
     # 3) normalizaciones especificas por tabla
     if file_name == "movies_metadata.csv":
         base_df = normalize_movies_metadata(base_df)
-    elif file_name == "ratings.csv":
-        for col in ("user_id", "movie_id", "timestamp"):
-            if col in base_df.columns:
-                base_df[col] = pd.to_numeric(base_df[col], errors="coerce").astype("Int64")
-        if "rating" in base_df.columns:
-            base_df["rating"] = pd.to_numeric(base_df["rating"], errors="coerce")
-    elif file_name == "links.csv":
-        for col in ("movie_id", "imdbId", "tmdbId"):
-            if col in base_df.columns:
-                base_df[col] = pd.to_numeric(base_df[col], errors="coerce").astype("Int64")
     elif file_name == "keywords.csv":
         if "movie_id" in base_df.columns:
             base_df["movie_id"] = pd.to_numeric(base_df["movie_id"], errors="coerce").astype("Int64")
