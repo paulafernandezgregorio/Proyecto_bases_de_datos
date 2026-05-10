@@ -205,56 +205,85 @@ El 71% de las películas son en inglés. Se detectó el código `cn` que no es u
 
 ---
 
-## C) Limpieza de Datos
+## C) Limpieza de datos 
 
-El objetivo de la limpieza es preparar los datos para el análisis de patrones y sesgos en películas. El script completo se encuentra en `parteC/limpieza_datos.sql`.
+El objetivo de la limpieza es preparar los datos para el análisis de patrones y posibles sesgos en películas. Esta etapa fue necesaria porque el dataset original contenía registros duplicados, valores faltantes, valores en cero que en realidad representaban datos no disponibles, códigos de idioma incorrectos y registros relacionados con películas eliminadas.
 
-### Actividades realizadas
+El script completo de limpieza se encuentra en:
 
-#### 1. Eliminación de duplicados y registros sin identificador
+```text
+parteC/limpieza_datos.sql
+```
 
-Se encontraron 33 registros con `movie_id` duplicado y 1 registro sin `movie_id`. En ambos casos no es posible identificar de forma única a qué película pertenece la información, por lo que fueron eliminados. Para los duplicados se conservó únicamente la primera aparición de cada película.
+**Actividades realizadas**
 
-#### 2. Conversión de budget y revenue de 0 a NULL
+**1. Eliminación de duplicados y registros sin identificador**
+Se encontraron registros con `movie_id` duplicado y registros sin `movie_id`. En ambos casos no era posible identificar correctamente a qué película pertenecía la información, por lo que fueron eliminados. Para los registros duplicados se conservó únicamente la primera aparición de cada película.
+Esta limpieza fue necesaria porque `movie_id` es el identificador principal que permite relacionar la tabla de películas con las tablas secundarias, como géneros, compañías, países, reparto, equipo técnico y palabras clave.
 
-Esta es la operación más importante de la limpieza. En el dataset original, cuando no se conoce el presupuesto (`budget`) o los ingresos (`revenue`) de una película, el valor aparece registrado como `0` en lugar de estar vacío. Esto es problemático porque un `0` parece un dato válido cuando en realidad significa "dato no disponible". Si no se corrige, cualquier cálculo de promedios o análisis financiero estaría completamente distorsionado. Por esta razón, todos los valores `0` en estas columnas fueron convertidos a `NULL`.
+**2. Conversión de `budget` y `revenue` de 0 a `NULL`**
+En el dataset original, cuando no se conoce el presupuesto (`budget`) o los ingresos (`revenue`) de una película, el valor aparece registrado como `0` en lugar de estar vacío.
+Esto es problemático porque un valor `0` puede parecer un dato válido, pero en realidad representa información no disponible. Si no se corrige, los promedios y análisis financieros del proyecto pueden quedar distorsionados. Por esta razón, todos los valores `0` en estas columnas fueron convertidos a `NULL`.
 
-#### 3. Corrección de código de idioma inválido
+**3. Corrección de código de idioma inválido**
+Se detectó el código de idioma `cn`, el cual no corresponde al estándar correcto usado para representar el idioma chino. Para mantener consistencia en los datos, este valor fue corregido a `zh`.
+Esta corrección fue necesaria porque el idioma original es una variable categórica importante para el análisis y debe estar representada de forma uniforme.
 
-Se encontró el código de idioma `cn` que no existe en el estándar ISO 639-1 de idiomas. El idioma chino se representa correctamente como `zh`. Se corrigieron todos los registros afectados.
+**4. Eliminación de películas sin estatus**
+Se eliminaron los registros donde la columna `status` era `NULL` o estaba vacía. Esta columna indica el estado de la película, por ejemplo si fue estrenada, cancelada, planeada o se encuentra en producción.
 
-#### 4. Eliminación de películas sin estatus
+Esta limpieza fue necesaria porque, sin conocer el estatus de una película, no es posible interpretarla correctamente dentro del análisis. Por ejemplo, una película sin estatus podría afectar los resultados si se compara con películas ya estrenadas.
 
-Se eliminaron 87 registros donde la columna `status` era NULL o estaba vacía. Sin saber si una película fue estrenada o no, no es posible incluirla en un análisis de películas exitosas.
+**5. Conversión de `runtime` inválido a `NULL`**
+Una duración de `0` minutos no representa un valor válido para una película. Por esta razón, los valores de `runtime` iguales a `0` fueron convertidos a `NULL`.
+Esta limpieza evita que los cálculos de duración promedio se vean afectados por valores que realmente representan datos faltantes o incorrectos.
 
-#### 5. Conversión de runtime inválido a NULL
+**6. Validación de fechas**
+La columna de fechas se manejó con tipo `DATE`, por lo que el formato queda validado durante la carga. Esto permite que las fechas se puedan usar correctamente en consultas temporales, como obtener mínimos, máximos o analizar películas por año.
+Las fechas vacías o no procesables se consideran valores faltantes y no se utilizan como fechas válidas en el análisis.
 
-Una duración de 0 minutos no es un valor válido para una película. Estos valores fueron convertidos a NULL para no afectar los cálculos de duración promedio.
+**7. Validación de la columna `adult`**
+La columna `adult` se maneja como tipo booleano, por lo que solo puede tomar valores válidos como `True` o `False`.
+Esto ayuda a evitar registros con valores incorrectos en esta columna y permite usarla correctamente como una variable categórica dentro del análisis.
 
-#### 6. Eliminación de fechas con formato inválido
+**8. Normalización de nombres y género en personas**
+Se identificaron casos donde una misma persona podía aparecer registrada con más de un nombre o con más de un valor en la columna `gender`. Para resolver esto, se normalizaron los registros de `credits_cast` y `credits_crew`.
+La regla utilizada para los nombres fue preferir primero el formato latino o inglés y después el nombre con mayor frecuencia. Para el género, se tomó el valor más frecuente, dando prioridad a valores distintos de `0`.
+Esta operación fue necesaria porque una misma persona no debe aparecer como si fueran varias personas diferentes por errores de escritura, diferencias de formato o variaciones en el nombre. También ayuda a mantener la consistencia entre actores y miembros del equipo técnico.
 
-Se eliminaron registros con fechas que no siguen el formato estándar `YYYY-MM-DD`, ya que no pueden ser procesadas correctamente en consultas temporales. Las fechas vacías fueron convertidas a NULL.
+**9. Eliminación de registros huérfanos en tablas secundarias**
+Después de limpiar la tabla principal `movies_metadata`, algunas tablas secundarias podían conservar registros relacionados con películas que ya no existían en la tabla principal.
+Por esta razón, se eliminaron registros huérfanos en las siguientes tablas:
 
-#### 7. Eliminación de valores inválidos en la columna adult
+| Tabla secundaria |
+|---|
+| `credits_cast` |
+| `credits_crew` |
+| `movies_metadata_genres` |
+| `movies_metadata_production_companies` |
+| `movies_metadata_production_countries` |
+| `keywords_keywords` |
 
-La columna `adult` solo debe contener `'True'` o `'False'`. Cualquier otro valor indica un error en los datos originales y fue eliminado.
+Esta limpieza fue necesaria para mantener la integridad de los datos, ya que no tendría sentido conservar géneros, actores, compañías, países o palabras clave de películas que ya fueron eliminadas.
 
-#### 8. Eliminación de registros huérfanos en tablas secundarias
+**10. Eliminación de duplicados en tablas secundarias**
 
-Un registro huérfano es aquel que hace referencia a una película que ya no existe en `movies_metadata` — porque fue eliminada en los pasos anteriores. Estos registros son inútiles sin su película de referencia, por lo que fueron eliminados de todas las tablas secundarias: `credits_cast`, `credits_crew`, `movies_metadata_genres`, `movies_metadata_production_companies`, `movies_metadata_production_countries` y `keywords_keywords`.
+También se eliminaron registros duplicados en tablas secundarias. Esto ocurrió cuando una misma película tenía repetido el mismo género, compañía productora, país de producción o palabra clave.
+Para corregirlo, se conservó únicamente la primera aparición de cada combinación repetida.
+Esta limpieza fue necesaria para evitar conteos inflados. Por ejemplo, si una película tenía repetido el mismo género dos veces, el análisis podría contar ese género más veces de las correctas.
 
-#### 9. Eliminación de duplicados en tablas secundarias
-
-Se eliminaron casos donde la misma película tenía el mismo género, país, compañía o keyword registrado más de una vez, conservando únicamente la primera aparición.
-
-### Resultado de la limpieza
+**Resultado de la limpieza**
 
 | Tabla | Antes | Después |
-|-------|-------|---------|
-| movies_metadata | 45,466 | 45,349 |
-| movies_metadata_genres | 91,106 | 90,911 |
-| movies_metadata_production_companies | 70,545 | 70,458 |
-| movies_metadata_production_countries | 49,423 | 49,332 |
-| credits_cast | 562,474 | 562,152 |
-| credits_crew | 464,314 | 464,079 |
-| keywords_keywords | 158,680 | 156,559 |
+|---|---:|---:|
+| `movies_metadata` | 45,466 | 45,349 |
+| `movies_metadata_genres` | 91,106 | 90,911 |
+| `movies_metadata_production_companies` | 70,545 | 70,458 |
+| `movies_metadata_production_countries` | 49,423 | 49,332 |
+| `credits_cast` | 562,474 | 562,152 |
+| `credits_crew` | 464,314 | 464,079 |
+| `keywords_keywords` | 158,680 | 156,559 |
+
+La limpieza de datos permitió mejorar la calidad del dataset antes de continuar con las siguientes etapas del proyecto. 
+Con estas actividades, el dataset queda más consistente y preparado para analizar patrones relacionados con las películas y su audiencia. 
+
