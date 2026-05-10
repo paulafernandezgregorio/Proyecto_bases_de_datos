@@ -1,12 +1,13 @@
 # Proyecto Final - Bases de Datos
 
 ## Integrantes
-- Alejandro Ozymandias Cepeda Beltran, CU:219451
-- Renata Pasalagua Payá, CU:218650
-- Mariana Rendón Monroy, CU:217225
-- Nicolás Burgueño Rodríguez, CU:218065
-- Gerardo Villanueva Vargas, CU:219890
-- Paula Fernández Gregorio, CU:218821
+- Alejandro Ozymandias Cepeda Beltran, CU:219451 git: 
+- Renata Pasalagua Payá, CU:218650 git: https://github.com/renatapasalagua 
+- Mariana Rendón Monroy, CU:217225 git: https://github.com/marianarendon2006
+- Nicolás Burgueño Rodríguez, CU:218065 git: https://github.com/itsGUCC1MAN
+- Gerardo Villanueva Vargas, CU:219890 git: 
+- Paula Fernández Gregorio, CU:218821 git: 
+
 
 ---
 
