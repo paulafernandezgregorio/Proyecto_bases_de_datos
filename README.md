@@ -57,9 +57,9 @@ Durante la exploración inicial del dataset se identificó que la tabla `ratings
 --FALTANTE: explicar como fue la transición de diccionarios a tablas nuevas, junto con la renombración de datos. Igualmente, incluir la parte en donde se evitan 12 columnas de la tabla generada movies_metadata_genres porque tenían fecha por id
 
 ### Carga de archivos .csv a postgresql
--- explicar la parte de definir un squema.sql con la información respectiva de los datos, tienes que correr el archivo "squema.sql"
+Para realizar la carga inicial se definió el archivo `parteB/schema.sql`, el cual crea el esquema `raw` y las tablas necesarias para almacenar los datos en bruto. En esta etapa todos los atributos se cargan inicialmente como texto para evitar errores de importación y permitir que las conversiones de tipo se realicen posteriormente durante la limpieza.
 
-Posteriormente a la creación de las tablas, utilizaremos el comando \copy para llevar la información de los .csv a nuestro PostGre.
+Posteriormente a la creación de las tablas, utilizaremos el comando \copy para llevar la información de los .csv a nuestro Postgres.
 
 IMPORTANTE: cambiar la codificación de WIN1252 a UTF8 usando las líneas de comando **\encoding UTF8
 SHOW client_encoding;
