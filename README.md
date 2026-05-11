@@ -36,8 +36,8 @@ Los archivos `links.csv` y `links_small.csv` contienen tablas de referencia para
 
 Por último, los archivos `ratings_small.csv` y `keywords.csv` contienen calificaciones de usuarios y palabras que describen la trama, ambas nos son útiles para identificar patrones de consumo y sesgos comunes. Finalmente, `rating_small.csv` consta de 100,004 tuplas y 4 atributos; y `keywords` consta de 46,419 tuplas y 2 atributos.
 
-hola
-Clasificación de atributos:
+
+*Clasificación de atributos:*
 | | `movies_metadata` | `keywords` | `credits` | `links` | `links_small` | `ratings_small` |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Numéricos** | budget, revenue, runtime, popularity, vote_average, vote_count | - | - | movieId, imdbId, tmdbId | movieId, imdbId, tmdbId | rating, userId, movieId |
