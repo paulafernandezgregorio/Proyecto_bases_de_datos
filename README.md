@@ -48,11 +48,13 @@ Por último, los archivos `ratings_small.csv` y `keywords.csv` contienen calific
 
 ---
 
-## B) Carga Inicial y Análisis Exploratorio
+### Documentación 
 
-### Decisión sobre ratings y links
+## B) Carga Inicial y análisis preliminar 
 
-Durante la exploración inicial del dataset se identificó que la tabla `ratings` contiene más de 26 millones de registros y ocupa 1.5 GB de espacio en disco. Al intentar ejecutar consultas sobre esta tabla, el sistema presentaba problemas severos de rendimiento, haciendo inviable su uso en el análisis. Dado que el objetivo del proyecto es identificar patrones en las **características propias de las películas** — como género, presupuesto, duración y popularidad — y no en el comportamiento individual de los usuarios, se tomó la decisión de excluir esta tabla del proyecto. La tabla `links`, cuya única función era relacionar películas con sus calificaciones en plataformas externas, también fue excluida por la misma razón.
+La carga inicial del set de datos se realizó en base de datos PostgreSQL. 
+Para esto, se descargaron los archivos .csv del dataset que recolectamos anteriormente, después creamos una base de datos en SQL para poder almacenar toda la información disponible de las películas. 
+Para poder **organizar la información**, se creó un esquema llamado raw, en el que se cargaron todas las tablas originales de los archivos de la base de datos. Este esquema lo utilizamos como una primera capa, **para que los datos del dataset no se perdieran** y se conservaran en su forma original antes de limpiarlos y acomodarlos. 
 
 ### Script de python
 --FALTANTE: explicar como fue la transición de diccionarios a tablas nuevas, junto con la renombración de datos. Igualmente, incluir la parte en donde se evitan 12 columnas de la tabla generada movies_metadata_genres porque tenían fecha por id
@@ -104,105 +106,149 @@ Las siguientes 7 tablas fueron creadas y cargadas a partir de los archivos CSV d
 ```sql
 CREATE DATABASE peliculas;
 \c peliculas
-```
-4. Ejecuta el script de creación del esquema:
-```sql
 \i 'ruta/al/repo/parteB/schema.sql'
 ```
-5. Carga cada CSV con `\copy` (reemplaza `/ruta/` con la ruta real a tu carpeta de archivos):
+
+Posteriormente, se cargan los archivos `.csv` utilizando el comando `\copy`. Es importante reemplazar `/ruta/` por la ubicación real de los archivos en la computadora donde se está ejecutando PostgreSQL.
+
 ```sql
 \copy raw.movies_metadata FROM '/ruta/movies_metadata.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
+
 \copy raw.movies_metadata_genres FROM '/ruta/movies_metadata_genres.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
+
 \copy raw.movies_metadata_production_companies FROM '/ruta/movies_metadata_production_companies.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
+
 \copy raw.movies_metadata_production_countries FROM '/ruta/movies_metadata_production_countries.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
+
 \copy raw.credits_cast FROM '/ruta/credits_cast.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
+
 \copy raw.credits_crew FROM '/ruta/credits_crew.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
+
 \copy raw.keywords_keywords FROM '/ruta/keywords_keywords.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8');
 ```
 
-### Limpieza de columnas no relevantes
+En esta carga inicial las **tablas que principalmente se usaron** fueron las siguientes: 
 
-Se eliminaron las columnas `profile_path` y `order` de `credits_cast`, y `profile_path` de `credits_crew`, ya que no aportan valor analítico. `profile_path` contiene rutas internas de imágenes no accesibles, y `order` representa el orden de aparición en pantalla, irrelevante para el análisis. El script correspondiente se encuentra en `parteB/limpieza.sql`.
+| Tabla | Descripción |
+|---|---|
+| `raw.movies_metadata` | Contiene la información general de las películas, como título, presupuesto, ingresos, duración, fecha de estreno, idioma, popularidad y votos. |
+| `raw.movies_metadata_genres` | Contiene los géneros asociados a cada película. |
+| `raw.movies_metadata_production_companies` | Contiene las compañías productoras relacionadas con cada película. |
+| `raw.movies_metadata_production_countries` | Contiene los países de producción asociados a cada película. |
+| `raw.credits_cast` | Contiene información del reparto de las películas. |
+| `raw.credits_crew` | Contiene información del equipo de producción de las películas. |
+| `raw.keywords_keywords` | Contiene las palabras clave relacionadas con cada película. |
 
-### Análisis exploratorio
+Después de obtener este esquema inicial, realizamos una **limpieza básica a los datos** para eliminar las columnas que no sirven para cumplir nuestro objetivo. En la tabla raw.credits_cast eliminamos las columnas profile_path y order debido a que daban informacion sobre la ruta de imagen y sobre el orden de reparto. De igual manera, en la tabla raw.credits_crew se eliminó la columna profile_path por las mismas razones. 
+Con esta limpieza podemos realizar el proyecto de manera más ordenada.
 
-#### Valores nulos en `movies_metadata`
+Después realizamos consultas para poder conocer el **funcionamiento y estructura del dataset**, para poder observar si hay problemas en los datos y los posibles patrones que podemos observar. Así utilizamos las consultas: 
+
+| Análisis realizado | Objetivo |
+|---|---|
+| Conteo de registros por tabla | Conocer cuántas tuplas tiene cada tabla cargada en la base de datos. |
+| Conteo de valores nulos | Identificar columnas con información faltante o vacía. |
+| Rango de fechas | Obtener la fecha mínima y máxima de estreno de las películas. |
+| Estadísticas numéricas | Obtener mínimos, máximos y promedios de variables como presupuesto, ingresos, duración y calificaciones. |
+| Conteo de valores en cero | Detectar posibles datos faltantes representados como `0`, especialmente en `budget`, `revenue` y `runtime`. |
+| Identificación de IDs duplicados | Revisar si existen películas repetidas dentro de la tabla principal. |
+| Idiomas más frecuentes | Conocer cuáles son los idiomas originales más comunes en el dataset. |
+| Estatus de películas | Revisar cuántas películas aparecen como estrenadas, canceladas u otro estado. |
+| Géneros más frecuentes | Identificar los géneros más repetidos dentro de las películas. |
+| Países productores más frecuentes | Conocer los países con mayor presencia en la base de datos. |
+| Compañías productoras más frecuentes | Identificar las compañías con más películas dentro del dataset. |
+| Keywords más frecuentes | Observar los temas o palabras clave más repetidas. |
+| Personas con múltiples nombres | Detectar inconsistencias en actores o miembros del equipo registrados con más de un nombre. |
+| Personas con múltiples géneros | Detectar posibles inconsistencias en la clasificación de género dentro de créditos de reparto o equipo. |
+
+En la limpieza preliminar encontramos los siguientes resultados: 
+
+| Tabla | Descripción | Registros |
+|---|---|---:|
+| `movies_metadata` | Información general de cada película. | 45,349 |
+| `movies_metadata_genres` | Géneros asociados a cada película. | 90,911 |
+| `movies_metadata_production_companies` | Compañías productoras por película. | 70,458 |
+| `movies_metadata_production_countries` | Países de producción por película. | 49,332 |
+| `credits_cast` | Actores y personajes por película. | 562,152 |
+| `credits_crew` | Equipo técnico por película. | 464,079 |
+| `keywords_keywords` | Palabras clave por película. | 156,559 |
+
+**datos nulos**
 
 | Columna | Valores nulos o vacíos |
-|---------|----------------------|
-| adult | 3 |
-| budget | 3 |
-| overview | 954 |
-| release_date | 90 |
-| runtime | 263 |
-| status | 87 |
-| vote_average | 6 |
+|---|---:|
+| `adult` | 3 |
+| `budget` | 3 |
+| `overview` | 954 |
+| `release_date` | 90 |
+| `runtime` | 263 |
+| `status` | 87 |
+| `vote_average` | 6 |
 
-La columna con más datos faltantes es `overview` con 954 registros sin descripción.
+La columna con más datos faltantes es `overview`, con 954 registros sin descripción.
 
-#### Estadísticas de valores numéricos
+**Estadisticas numéricas** 
 
 | Métrica | Budget | Revenue | Runtime | Vote Average |
-|---------|--------|---------|---------|--------------|
+|---|---:|---:|---:|---:|
 | Mínimo | $1 | $1 | 0.0 min | 0.0 |
 | Máximo | $380,000,000 | $2,787,965,087 | 338.0 min | 9.1 |
 | Promedio | $31,112,688 | $90,408,636 | 110 min | 6.27 |
 
-> Nota: estos valores excluyen registros con budget, revenue o runtime igual a NULL (previamente convertidos desde cero).
+**Valores en cero** 
 
-#### Valores en cero (datos faltantes disfrazados)
+| Columna | Registros con valor 0 | Porcentaje aproximado |
+|---|---:|---:|
+| `budget` | 36,573 | ~80% |
+| `revenue` | 38,052 | ~84% |
+| `runtime` | 0 | 0% |
 
-Un hallazgo importante es que una gran proporción de películas tienen `budget` y `revenue` registrados como `0`, lo que en realidad representa datos no disponibles:
+Una gran proporción de películas tiene `budget` y `revenue` registrados como `0`. Estos valores se interpretaron como datos faltantes, ya que no representan necesariamente que la película no haya tenido presupuesto o ingresos, sino que esa información no estaba disponible en el dataset.
 
-| Columna | Registros con valor 0 | Porcentaje |
-|---------|-----------------------|------------|
-| budget | 36,573 | ~80% |
-| revenue | 38,052 | ~84% |
-| runtime | 0 | 0% |
+**Rango de fechas**
 
-Estos valores fueron tratados como nulos durante la limpieza.
+Las películas abarcan desde `1874-12-09` hasta `2020-12-16`, aunque la mayoría se concentra entre 1990 y 2017.
 
-#### IDs duplicados
-
-De los 45,466 registros originales en `movies_metadata`, se encontraron **33 IDs duplicados** y **1 registro sin movie_id**, los cuales fueron eliminados en la etapa de limpieza.
-
-#### Rango de fechas
-
-Las películas abarcan desde **1874-12-09** hasta **2020-12-16**, con la mayoría concentradas entre 1990 y 2017.
-
-#### Distribución por idioma original (Top 5)
+**Idioma**
 
 | Idioma | Películas |
-|--------|-----------|
-| Inglés (en) | 32,269 |
-| Francés (fr) | 2,438 |
-| Italiano (it) | 1,529 |
-| Japonés (ja) | 1,350 |
-| Alemán (de) | 1,080 |
+|---|---:|
+| Inglés (`en`) | 32,269 |
+| Francés (`fr`) | 2,438 |
+| Italiano (`it`) | 1,529 |
+| Japonés (`ja`) | 1,350 |
+| Alemán (`de`) | 1,080 |
 
-El 71% de las películas son en inglés. Se detectó el código `cn` que no es un código ISO válido (debería ser `zh`), lo cual fue corregido en la limpieza.
+El 71% de las películas se encuentran registradas en inglés. También se detectó el código `cn`, que no corresponde al código ISO correcto para chino y fue corregido a `zh` durante la limpieza.
 
-#### Distribución por estatus
+**Status de la película**
 
-| Estatus | Películas |
-|---------|-----------|
-| Released | 45,014 |
-| Rumored | 230 |
-| Post Production | 98 |
-| NULL | 87 |
-| In Production | 20 |
-| Planned | 15 |
-| Canceled | 2 |
+| Status | Películas |
+|---|---:|
+| `Released` | 45,014 |
+| `Rumored` | 230 |
+| `Post Production` | 98 |
+| `NULL` | 87 |
+| `In Production` | 20 |
+| `Planned` | 15 |
+| `Canceled` | 2 |
 
-#### Géneros más frecuentes (Top 5)
+La mayoría de las películas del dataset se encuentran en estado `Released`, lo cual es esperado porque el conjunto de datos se enfoca principalmente en películas ya estrenadas.
+
+**Géneros más frecuentes** 
 
 | Género | Películas |
-|--------|-----------|
+|---|---:|
 | Drama | 20,265 |
 | Comedy | 13,182 |
 | Thriller | 7,624 |
 | Romance | 6,735 |
 | Action | 6,596 |
+
+Los géneros más frecuentes son Drama y Comedy, lo que indica que estos tipos de películas tienen una presencia muy alta dentro del dataset.
+
+**Inconsistencias encontradas**
+Durante el análisis preliminar se encontraron algunas inconsistencias en el set de datos. Entre ellas se identificaron valores en cero en columnas como `budget` y `revenue`, los cuales fueron interpretados como datos faltantes. También se encontraron 33 IDs duplicados y 1 registro sin `movie_id`, por lo que fueron eliminados durante la limpieza. Además, se detectó el código de idioma `cn`, que no corresponde al código ISO correcto para chino, por lo que fue corregido a `zh`
 
 ---
 
