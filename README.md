@@ -259,3 +259,133 @@ Se eliminaron casos donde la misma película tenía el mismo género, país, com
 | credits_cast | 562,474 | 562,152 |
 | credits_crew | 464,314 | 464,079 |
 | keywords_keywords | 158,680 | 156,559 |
+
+###Consultas
+
+### Sesgo de Género en la Dirección Cinematográfica
+
+La siguiente query calcula el porcentaje de directores por género en la industria cinematográfica. Se puede observar que los hombres dominan ampliamente la dirección con un 56.13%, mientras que las mujeres representan apenas el 3.88% del total.
+
+```sql
+-- Sesgo de Genero
+-- Porcentaje de directores mujeres vs hombres:
+SELECT 
+    CASE gender 
+        WHEN 1 THEN 'Mujer'
+        WHEN 2 THEN 'Hombre'
+        ELSE 'No especificado'
+    END AS genero,
+    COUNT(*) AS total,
+    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS porcentaje
+FROM core.movie_crew mc
+JOIN core.persons p ON p.person_id = mc.person_id
+WHERE mc.job = 'Director'
+GROUP BY gender
+ORDER BY total DESC;
+```
+
+| genero | total | porcentaje |
+|---|---|---|
+| Hombre | 26,716 | 56.13% |
+| No especificado | 19,029 | 39.98% |
+| Mujer | 1,848 | 3.88% |
+
+Este resultado evidencia un sesgo de género muy pronunciado: por cada directora mujer existen aproximadamente 14 directores hombres. El 39.98% de registros sin género especificado limita el análisis, pero incluso en el escenario más optimista la brecha seguiría siendo significativa. Esto refleja décadas de desigualdad en el acceso de las mujeres a roles de dirección dentro de la industria del cine.
+
+### Presupuesto y Revenue Promedio según Género del Director
+
+La siguiente query compara el presupuesto promedio y el revenue promedio de las películas según el género de su director, considerando únicamente películas con datos financieros disponibles.
+
+```sql
+-- Presupuesto promedio según género del director
+SELECT 
+    CASE p.gender 
+        WHEN 1 THEN 'Mujer'
+        WHEN 2 THEN 'Hombre'
+        ELSE 'No especificado'
+    END AS genero_director,
+    ROUND(AVG(m.budget)) AS presupuesto_promedio,
+    ROUND(AVG(m.revenue)) AS revenue_promedio,
+    COUNT(*) AS total_peliculas
+FROM core.movie_crew mc
+JOIN core.persons p ON p.person_id = mc.person_id
+JOIN core.movies m ON m.movie_id = mc.movie_id
+WHERE mc.job = 'Director'
+  AND m.budget IS NOT NULL
+  AND m.budget > 0
+  AND m.revenue IS NOT NULL
+  AND m.revenue > 0
+GROUP BY p.gender
+ORDER BY presupuesto_promedio DESC;
+```
+
+| genero_director | presupuesto_promedio | revenue_promedio | total_peliculas |
+|---|---|---|---|
+| Hombre | $34,662,925 | $103,648,285 | 4,360 |
+| Mujer | $27,609,620 | $82,126,234 | 236 |
+| No especificado | $20,456,304 | $58,817,673 | 1,015 |
+
+Los resultados muestran que las películas dirigidas por hombres reciben en promedio un presupuesto **25.5% mayor** que las dirigidas por mujeres ($34.6M vs $27.6M). Esta brecha se amplía en el revenue, donde las películas de directores hombres generan un **26.2% más** que las de directoras ($103.6M vs $82.1M). Sin embargo, es importante considerar que esta diferencia de revenue puede ser consecuencia directa de la diferencia de presupuesto, ya que con menos recursos es natural obtener menores ingresos, lo que refuerza el sesgo en lugar de indicar menor capacidad de las directoras.
+
+### Sesgo de Género en el Reparto (Cast)
+
+La siguiente query analiza la distribución de género dentro del reparto de las películas, comparando la proporción de actores hombres y mujeres en el total de créditos de actuación.
+
+```sql
+-- Porcentaje del cast por género
+SELECT 
+    CASE p.gender 
+        WHEN 1 THEN 'Mujer'
+        WHEN 2 THEN 'Hombre'
+        ELSE 'No especificado'
+    END AS genero,
+    COUNT(*) AS total,
+    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS porcentaje
+FROM core.movie_cast mc
+JOIN core.persons p ON p.person_id = mc.person_id
+GROUP BY p.gender
+ORDER BY total DESC;
+```
+
+| genero | total | porcentaje |
+|---|---|---|
+| Hombre | 226,071 | 40.33% |
+| No especificado | 222,912 | 39.77% |
+| Mujer | 111,532 | 19.90% |
+
+A diferencia de la dirección donde las mujeres representaban apenas el 3.88%, en el reparto la presencia femenina sube al **19.90%**, lo que sigue siendo significativamente menor que la masculina del 40.33%. Esto indica que aunque las mujeres tienen mayor acceso a roles de actuación que a roles de dirección, la brecha sigue siendo considerable: por cada actriz hay aproximadamente 2 actores hombres. El alto porcentaje de género no especificado (39.77%) nuevamente limita el análisis completo, pero la tendencia es clara: la industria favorece históricamente la participación masculina tanto frente como detrás de las cámaras.
+
+### Sesgo de Idioma: Presupuesto y Revenue Promedio por Idioma (Top 10)
+
+La siguiente query analiza la distribución de presupuesto y revenue promedio según el idioma original de las películas, considerando únicamente aquellas con datos financieros disponibles.
+
+```sql
+-- Sesgos de idioma/país
+-- Presupuesto y revenue promedio por idioma (Top 10)
+SELECT 
+    original_language,
+    COUNT(*) AS total_peliculas,
+    ROUND(AVG(budget)) AS presupuesto_promedio,
+    ROUND(AVG(revenue)) AS revenue_promedio
+FROM core.movies
+WHERE budget > 0 AND revenue > 0
+GROUP BY original_language
+ORDER BY total_peliculas DESC
+LIMIT 10;
+```
+
+| idioma | total_peliculas | presupuesto_promedio | revenue_promedio |
+|---|---|---|---|
+| en (Inglés) | 4,795 | $33,726,280 | $98,157,736 |
+| hi (Hindi) | 99 | $6,913,674 | $24,967,194 |
+| fr (Francés) | 88 | $13,183,020 | $24,695,494 |
+| ru (Ruso) | 70 | $6,164,228 | $10,189,745 |
+| zh (Chino) | 44 | $23,243,759 | $75,306,385 |
+| es (Español) | 38 | $7,462,575 | $21,404,293 |
+| ja (Japonés) | 38 | $14,977,571 | $56,266,631 |
+| it (Italiano) | 31 | $6,538,796 | $16,434,427 |
+| ta (Tamil) | 26 | $5,864,075 | $19,288,462 |
+| ko (Coreano) | 25 | $8,680,960 | $27,548,102 |
+
+Los resultados revelan un dominio absoluto del inglés en la industria cinematográfica: las películas en inglés representan el **83% del total** con datos financieros disponibles y reciben un presupuesto promedio **casi 5 veces mayor** que el Hindi (segundo idioma más frecuente). El revenue promedio del inglés ($98.1M) es también el más alto, seguido sorprendentemente por el Chino ($75.3M) y el Japonés ($56.3M), lo que sugiere que los mercados asiáticos generan retornos considerables a pesar de recibir menores presupuestos. El español, siendo uno de los idiomas más hablados del mundo, aparece con apenas 38 películas y un presupuesto promedio muy bajo ($7.4M), lo que evidencia una subrepresentación significativa de la industria hispanohablante.
+
