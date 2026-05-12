@@ -1,77 +1,50 @@
 # Proyecto Final - Bases de Datos
 
 ## Integrantes
-- Alejandro Ozymandias Cepeda Beltran, CU:219451
-- Renata Pasalagua Payá, CU:218650
-- Mariana Rendón Monroy, CU:217225
-- Nicolás Burgueño Rodríguez, CU:218065
-- Gerardo Villanueva Vargas, CU:219890
-- Paula Fernández Gregorio, CU:218821
+- Alejandro Ozymandias Cepeda Beltran, CU:219451 git: 
+- Renata Pasalagua Payá, CU:218650 git: https://github.com/renatapasalagua 
+- Mariana Rendón Monroy, CU:217225 git: https://github.com/marianarendon2006
+- Nicolás Burgueño Rodríguez, CU:218065 git: https://github.com/itsGUCC1MAN
+- Gerardo Villanueva Vargas, CU:219890 git: 
+- Paula Fernández Gregorio, CU:218821 git: 
+
 
 ---
 
 ## A) Introducción
 
-Estamos realizando un proyecto con una base de datos de películas disponible en **Kaggle**, recolectado por **Rounak Banik** llamada **The Movies Dataset**. Esta base de datos contiene información detallada sobre distintos aspectos de la industria cinematográfica, lo que nos permite analizar películas desde diferentes categorías como el género, el presupuesto o la duración.
+Estamos realizando un proyecto con una base de datos de películas disponible en Kaggle, recolectado por Rounak Banik llamada The Movies Dataset. Esta base de datos contiene información detallada sobre distintos aspectos de la industria cinematográfica, lo que nos permite analizar películas desde diferentes categorías como el género, el presupuesto o la duración.
 
-El **objetivo principal** de este proyecto es **observar e identificar distintos patrones repetidos o sesgos comunes dentro de las películas.** Con sesgos nos referimos a tendencias que aparecen en la forma en que ciertas películas son producidas, clasificadas, valoradas o consumidas por el público. Por ejemplo, podemos analizar si ciertos géneros suelen tener mayor presupuesto, si las películas más populares reciben mejores calificaciones, si existe relación entre la duración y la valoración del público, o si algunas características de las películas se repiten con mayor frecuencia que otras.
+El objetivo principal de este proyecto es observar e identificar distintos patrones repetidos o sesgos comunes dentro de las películas. Con sesgos nos referimos a tendencias que aparecen en la forma en que ciertas películas son producidas, clasificadas, valoradas o consumidas por el público. Por ejemplo, podemos analizar si ciertos géneros suelen tener mayor presupuesto, si las películas más populares reciben mejores calificaciones, si existe relación entre la duración y la valoración del público, o si algunas características de las películas se repiten con mayor frecuencia que otras.
 
-Además, el dataset nos permite estudiar no solo la información propia de las películas, sino también algunos **patrones relacionados con el comportamiento del público**. A través de datos como la popularidad, el promedio de calificaciones y el número de votos, podemos observar qué tipo de películas generan mayor interés, cuáles son mejor evaluadas y qué tendencias se repiten entre los espectadores.
+Además, el dataset nos permite estudiar no solo la información propia de las películas, sino también algunos patrones relacionados con el comportamiento del público. A través de datos como la popularidad, el promedio de calificaciones y el número de votos, podemos observar qué tipo de películas generan mayor interés, cuáles son mejor evaluadas y qué tendencias se repiten entre los espectadores.
 
-**Esta base de datos está organizada** en varios archivos, cada uno con información específica. Por ejemplo, el archivo `movies_metadata.csv` contiene los datos generales de cada película, como título, género, presupuesto, duración, ingresos y popularidad. Por otro lado, el archivo `keywords.csv` incluye palabras clave relacionadas con la trama de las películas, lo que ayuda a identificar temas o elementos narrativos recurrentes. En conjunto, estos archivos permiten realizar un análisis más completo para comprender los patrones y posibles sesgos presentes tanto en las características de las películas como en la respuesta del público hacia ellas.
+Esta base de datos está organizada en varios archivos, cada uno con información específica. Por ejemplo, el archivo `movies_metadata.csv` contiene los datos generales de cada película, como título, género, presupuesto, duración, ingresos y popularidad. Por otro lado, el archivo `keywords.csv` incluye palabras clave relacionadas con la trama de las películas, lo que ayuda a identificar temas o elementos narrativos recurrentes. En conjunto, estos archivos permiten realizar un análisis más completo para comprender los patrones y posibles sesgos presentes tanto en las características de las películas como en la respuesta del público hacia ellas.
 
-**Este dataset no se actualiza con frecuencia**, ya que las películas más nuevas se estrenaron en 2017. Sin embargo, esto no afecta nuestro objetivo ya que no necesitamos que esté actualizada para encontrar los sesgos.
+Este dataset no se actualiza con frecuencia, ya que las películas más nuevas se estrenaron en 2017. Sin embargo, esto no afecta nuestro objetivo ya que no necesitamos que esté actualizada para encontrar los sesgos.
 
-**Las consideraciones éticas** que se tienen que hacer con este dataset son las siguientes: 
-- las calificaciones del usuario no tienen nombre, solo están numeradas, por lo que se está protegiendo al usuario. Sería incorrecto tratar de buscar los nombres de las personas que calificaron las películas. 
-- No podemos tomar como generales estos datos, es decir, los sesgos que captamos son de esta base de datos solamente y no de la población en general porque no toda la población votó en la encuesta.
+Las consideraciones éticas que se tienen que hacer con este dataset son las siguientes: las calificaciones del usuario no tienen nombre, solo están numeradas, por lo que se está protegiendo al usuario. Sería incorrecto tratar de buscar los nombres de las personas que calificaron las películas. No podemos tomar como generales estos datos, es decir, los sesgos que captamos son de esta base de datos solamente y no de la población en general porque no toda la población votó en la encuesta.
 
-**Descripción del dataset:**
-Los datos los podemos obtener del siguiente link: https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset?select=ratings_small.csv 
+**Descripción general:**
 
-El conjunto de datos está dividido en varios **archivos**: 
-- **archivo principal**: movies_metadata.csv, el cual tiene 45,466 tuplas y 24 atributos 
-- **2do archivo**: ratings_small.csv, el cual tiene 100,004 tuplas y 24 atributos 
-- **archivos complementarios**: keywords.csv, credits.csv, links.csv, los cuales tienen información sobre palabras clave y equipo de producción. 
-Para poder entender y realizar nuestro objetivo, el cual es encontrar sesgos, tenemos que entender los atributos y los tipos que son para poder usarlos correctamente: 
-| Atributo | Archivo | Significado |
-|---|---|---|
-| `adult` | `movies_metadata.csv` | Indica si la película está clasificada como contenido para adultos. |
-| `belongs_to_collection` | `movies_metadata.csv` | Indica si la película pertenece a una colección o saga. |
-| `budget` | `movies_metadata.csv` | Presupuesto de producción de la película. |
-| `genres` | `movies_metadata.csv` | Géneros asociados a la película, como acción, drama, comedia, entre otros. |
-| `homepage` | `movies_metadata.csv` | Página web oficial de la película, si existe. |
-| `id` | `movies_metadata.csv` | Identificador único de la película dentro del dataset. |
-| `imdb_id` | `movies_metadata.csv` | Identificador de la película en IMDb. |
-| `original_language` | `movies_metadata.csv` | Idioma original de la película. |
-| `original_title` | `movies_metadata.csv` | Título original de la película. |
-| `overview` | `movies_metadata.csv` | Breve descripción o resumen de la película. |
-| `popularity` | `movies_metadata.csv` | Medida de popularidad de la película dentro de la base de datos. |
-| `poster_path` | `movies_metadata.csv` | Ruta o identificador del póster de la película. |
-| `production_companies` | `movies_metadata.csv` | Compañías productoras que participaron en la película. |
-| `production_countries` | `movies_metadata.csv` | Países donde se produjo la película. |
-| `release_date` | `movies_metadata.csv` | Fecha de estreno de la película. |
-| `revenue` | `movies_metadata.csv` | Ingresos generados por la película. |
-| `runtime` | `movies_metadata.csv` | Duración de la película en minutos. |
-| `spoken_languages` | `movies_metadata.csv` | Idiomas hablados dentro de la película. |
-| `status` | `movies_metadata.csv` | Estado de la película, por ejemplo, estrenada o cancelada. |
-| `tagline` | `movies_metadata.csv` | Frase promocional de la película. |
-| `title` | `movies_metadata.csv` | Título de la película. |
-| `video` | `movies_metadata.csv` | Indica si existe un video asociado a la película. |
-| `vote_average` | `movies_metadata.csv` | Promedio de calificaciones recibidas por la película. |
-| `vote_count` | `movies_metadata.csv` | Número total de votos recibidos por la película. |
-| `userId` | `ratings_small.csv` | Identificador del usuario que calificó una película. |
-| `movieId` | `ratings_small.csv` | Identificador de la película calificada. |
-| `rating` | `ratings_small.csv` | Calificación asignada por el usuario a la película. |
-| `timestamp` | `ratings_small.csv` | Momento en que el usuario realizó la calificación. |
+El dataset cuenta con alrededor de 45 mil datos de películas estrenadas hasta julio 2017 y no se ha actualizado desde su fecha de publicación. Incluye calificaciones, géneros, presupuestos, país de producción, entre otras cosas.
+
+La base de datos está dividida en varios archivos CSV. El archivo principal `movies_metadata.csv`, incluye información general y financiera sobre la producción y lanzamiento de las películas. Consta de 45,466 tuplas y 24 atributos.
+
+El archivo `credits.csv` contiene nombres del reparto y del equipo técnico de cada película. Consta de 45,476 y 3 atributos.
+
+Los archivos `links.csv` y `links_small.csv` contienen tablas de referencia para cruzar los IDs de las películas entre diferentes bases de datos y plataformas de referencia cinematográfica como IMDb y MovieLens. El archivo `links.csv` consta de 45,843 y 3 atributos; y `links_small.csv` consta de 9,125 tuplas y 3 atributos. 
+
+Por último, los archivos `ratings_small.csv` y `keywords.csv` contienen calificaciones de usuarios y palabras que describen la trama, ambas nos son útiles para identificar patrones de consumo y sesgos comunes. Finalmente, `rating_small.csv` consta de 100,004 tuplas y 4 atributos; y `keywords` consta de 46,419 tuplas y 2 atributos.
 
 
-| Tipo de atributo | Atributos | ¿Para qué sirven? |
-|---|---|---|
-| Numéricos | `budget`, `revenue`, `runtime`, `popularity`, `vote_average`, `vote_count`, `userId`, `movieId`, `rating`, `timestamp` | Permiten realizar comparaciones, cálculos estadísticos y análisis cuantitativos dentro del proyecto. |
-| Categóricos | `adult`, `genres`, `original_language`, `status`, `video`, `production_companies`, `production_countries`, `spoken_languages` | Permiten clasificar las películas en distintos grupos o categorías, como género, idioma, país de producción o estado de lanzamiento. |
-| Texto | `title`, `original_title`, `overview`, `tagline`, `homepage`, `imdb_id`, `poster_path` | Contienen nombres, descripciones, identificadores, frases promocionales o rutas relacionadas con la información de cada película. |
-| Temporales o de fecha | `release_date`, `timestamp` | `release_date` indica la fecha de estreno de la película y `timestamp` registra el momento en que un usuario realizó una calificación dentro del archivo de ratings. |
+*Clasificación de atributos:*
+| | `movies_metadata` | `keywords` | `credits` | `links` | `links_small` | `ratings_small` |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Numéricos** | budget, revenue, runtime, popularity, vote_average, vote_count | - | - | movieId, imdbId, tmdbId | movieId, imdbId, tmdbId | rating, userId, movieId |
+| **Categóricos** | adult, original_language, status, video | - | - | - | - | - |
+| **Texto** | id, imdb_id, title, original_title, overview, tagline, homepage, poster_path, genres, belongs_to_collection, production_companies, production_countries, spoken_language | id, keywords | id, cast, crew | - | - | - |
+| **Temporales** | release_date | - | - | - | - | timestamp |
 
 ---
 
@@ -85,9 +58,9 @@ Durante la exploración inicial del dataset se identificó que la tabla `ratings
 --FALTANTE: explicar como fue la transición de diccionarios a tablas nuevas, junto con la renombración de datos. Igualmente, incluir la parte en donde se evitan 12 columnas de la tabla generada movies_metadata_genres porque tenían fecha por id
 
 ### Carga de archivos .csv a postgresql
--- explicar la parte de definir un squema.sql con la información respectiva de los datos, tienes que correr el archivo "squema.sql"
+Para realizar la carga inicial se definió el archivo `parteB/schema.sql`, el cual crea el esquema `raw` y las tablas necesarias para almacenar los datos en bruto. En esta etapa todos los atributos se cargan inicialmente como texto para evitar errores de importación y permitir que las conversiones de tipo se realicen posteriormente durante la limpieza.
 
-Posteriormente a la creación de las tablas, utilizaremos el comando \copy para llevar la información de los .csv a nuestro PostGre.
+Posteriormente a la creación de las tablas, utilizaremos el comando \copy para llevar la información de los .csv a nuestro Postgres.
 
 IMPORTANTE: cambiar la codificación de WIN1252 a UTF8 usando las líneas de comando **\encoding UTF8
 SHOW client_encoding;
