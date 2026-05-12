@@ -1,12 +1,13 @@
 # Proyecto Final - Bases de Datos
 
 ## Integrantes
-- Alejandro Ozymandias Cepeda Beltran, CU:219451
-- Renata Pasalagua Payá, CU:218650
-- Mariana Rendón Monroy, CU:217225
-- Nicolás Burgueño Rodríguez, CU:218065
-- Gerardo Villanueva Vargas, CU:219890
-- Paula Fernández Gregorio, CU:218821
+- Alejandro Ozymandias Cepeda Beltran, CU:219451 git: 
+- Renata Pasalagua Payá, CU:218650 git: https://github.com/renatapasalagua 
+- Mariana Rendón Monroy, CU:217225 git: https://github.com/marianarendon2006
+- Nicolás Burgueño Rodríguez, CU:218065 git: https://github.com/itsGUCC1MAN
+- Gerardo Villanueva Vargas, CU:219890 git: 
+- Paula Fernández Gregorio, CU:218821 git: 
+
 
 ---
 
@@ -36,8 +37,8 @@ Los archivos `links.csv` y `links_small.csv` contienen tablas de referencia para
 
 Por último, los archivos `ratings_small.csv` y `keywords.csv` contienen calificaciones de usuarios y palabras que describen la trama, ambas nos son útiles para identificar patrones de consumo y sesgos comunes. Finalmente, `rating_small.csv` consta de 100,004 tuplas y 4 atributos; y `keywords` consta de 46,419 tuplas y 2 atributos.
 
-hola
-Clasificación de atributos:
+
+*Clasificación de atributos:*
 | | `movies_metadata` | `keywords` | `credits` | `links` | `links_small` | `ratings_small` |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Numéricos** | budget, revenue, runtime, popularity, vote_average, vote_count | - | - | movieId, imdbId, tmdbId | movieId, imdbId, tmdbId | rating, userId, movieId |
@@ -55,6 +56,53 @@ La carga inicial del set de datos se realizó en base de datos PostgreSQL.
 Para esto, se descargaron los archivos .csv del dataset que recolectamos anteriormente, después creamos una base de datos en SQL para poder almacenar toda la información disponible de las películas. 
 Para poder **organizar la información**, se creó un esquema llamado raw, en el que se cargaron todas las tablas originales de los archivos de la base de datos. Este esquema lo utilizamos como una primera capa, **para que los datos del dataset no se perdieran** y se conservaran en su forma original antes de limpiarlos y acomodarlos. 
 
+### Script de python
+--FALTANTE: explicar como fue la transición de diccionarios a tablas nuevas, junto con la renombración de datos. Igualmente, incluir la parte en donde se evitan 12 columnas de la tabla generada movies_metadata_genres porque tenían fecha por id
+
+### Carga de archivos .csv a postgresql
+Para realizar la carga inicial se definió el archivo `parteB/schema.sql`, el cual crea el esquema `raw` y las tablas necesarias para almacenar los datos en bruto. En esta etapa todos los atributos se cargan inicialmente como texto para evitar errores de importación y permitir que las conversiones de tipo se realicen posteriormente durante la limpieza.
+
+Posteriormente a la creación de las tablas, utilizaremos el comando \copy para llevar la información de los .csv a nuestro Postgres.
+
+IMPORTANTE: cambiar la codificación de WIN1252 a UTF8 usando las líneas de comando **\encoding UTF8
+SHOW client_encoding;
+**
+
+| Líneas de comando |
+|-------------------|
+| \copy raw.credits_cast FROM '{dirección_de_carpeta_en_PC}/credits_cast.csv' DELIMITER ',' CSV HEADER; |
+| \copy raw.credits_crew FROM '{dirección_de_carpeta_en_PC}/credits_crew.csv' DELIMITER ',' CSV HEADER; |
+| \copy raw.keywords_keywords FROM '{dirección_de_carpeta_en_PC}/keywords_keywords.csv' DELIMITER ',' CSV HEADER; |
+| \copy raw.movies_metadata FROM '{dirección_de_carpeta_en_PC}/movies_metadata.csv' DELIMITER ',' CSV HEADER; |
+| \copy raw.movies_metadata_genres FROM '{dirección_de_carpeta_en_PC}/movies_metadata_genres.csv' DELIMITER ',' CSV HEADER; |
+| \copy raw.movies_metadata_production_companies FROM '{dirección_de_carpeta_en_PC}/movies_metadata_production_companies.csv' DELIMITER ',' CSV HEADER; |
+| \copy raw.movies_metadata_production_countries FROM '{dirección_de_carpeta_en_PC}/movies_metadata_production_countries.csv' DELIMITER ',' CSV HEADER; | 
+
+### Esquema inicial
+
+Los datos se cargan en un esquema llamado `raw` dentro de la base de datos `peliculas`. Se utilizó un esquema separado para distinguir los datos en bruto de las tablas normalizadas que se crearán en etapas posteriores. Todos los atributos se definen como `TEXT` en la carga inicial para evitar errores de tipo durante la importación; la conversión a tipos adecuados se realiza en la etapa de limpieza.
+
+El script de creación del esquema se encuentra en `parteB/schema.sql`.
+
+### Tablas cargadas
+
+Las siguientes 7 tablas fueron creadas y cargadas a partir de los archivos CSV del dataset:
+
+| Tabla | Descripción | Registros |
+|-------|-------------|-----------|
+| `movies_metadata` | Información general de cada película | 45,349 |
+| `movies_metadata_genres` | Géneros asociados a cada película | 90,911 |
+| `movies_metadata_production_companies` | Compañías productoras por película | 70,458 |
+| `movies_metadata_production_countries` | Países de producción por película | 49,332 |
+| `credits_cast` | Actores y personajes por película | 562,152 |
+| `credits_crew` | Equipo técnico por película | 464,079 |
+| `keywords_keywords` | Palabras clave por película | 156,559 |
+
+### Instrucciones de replicación
+
+1. Descarga el dataset desde [Kaggle - The Movies Dataset](https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset)
+2. Clona este repositorio
+3. Conéctate a PostgreSQL y crea la base de datos:
 ```sql
 CREATE DATABASE peliculas;
 \c peliculas
