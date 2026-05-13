@@ -331,6 +331,82 @@ Esta limpieza fue necesaria para evitar conteos inflados. Por ejemplo, si una pe
 | credits_crew | 464,314 | 464,079 |
 | keywords_keywords | 158,680 | 156,559 |
 
+## D) Normalización de datos hasta cuarta forma normal 
+El objetivo de esta etapa fue transformar los datos limpios del esquema `raw` en un diseño más organizado y normalizado dentro de un nuevo esquema llamado `core`.
+
+En las etapas anteriores, los datos fueron cargados y limpiados en tablas cercanas a los archivos originales del dataset. Sin embargo, algunas columnas contenían información repetida o relaciones de muchos a muchos, por ejemplo: una película puede tener varios géneros, varias compañías productoras, varios países de producción, varias palabras clave, varios actores y varios miembros del equipo técnico.
+
+Por esta razón, se realizó una descomposición de los datos en entidades independientes y tablas de relación. Esto permite reducir redundancia, evitar tuplas duplicadas y facilitar consultas posteriores.
+
+El script completo de normalización se encuentra en:
+
+```text
+parteD/normalizacion.sql
+```
+
+**Esquema utilizado**
+Para la normalización se creó el esquema `core`, separado del esquema `raw`.
+El esquema `raw` conserva los datos limpios en una estructura cercana a los archivos originales, mientras que el esquema `core` contiene el diseño normalizado final.
+
+```sql
+CREATE SCHEMA IF NOT EXISTS core;
+```
+**Entidades principales del diseño normalizado**
+A partir del análisis del dataset, se identificaron las siguientes entidades principales:
+| Entidad | Tabla en `core` | Descripción |
+|---|---|---|
+| Película | `core.movies` | Contiene la información principal de cada película. |
+| Persona | `core.persons` | Contiene actores y miembros del equipo técnico. |
+| Género | `core.genres` | Contiene los géneros cinematográficos. |
+| Keyword | `core.keywords` | Contiene las palabras clave asociadas a películas. |
+| Compañía | `core.companies` | Contiene compañías productoras. |
+| País | `core.countries` | Contiene países de producción. |
+
+**Tablas de relación**
+También se crearon tablas intermedias para representar relaciones de muchos a muchos. Esto fue necesario porque una película puede estar relacionada con varios elementos de una misma entidad, y un mismo elemento puede aparecer en muchas películas.
+
+| Relación | Tabla intermedia | Descripción |
+|---|---|---|
+| Películas y géneros | `core.movie_genres` | Relaciona cada película con sus géneros. |
+| Películas y keywords | `core.movie_keywords` | Relaciona cada película con sus palabras clave. |
+| Películas y compañías | `core.movie_companies` | Relaciona cada película con sus compañías productoras. |
+| Películas y países | `core.movie_countries` | Relaciona cada película con sus países de producción. |
+| Películas y reparto | `core.movie_cast` | Relaciona cada película con las personas que participaron como actores. |
+| Películas y equipo técnico | `core.movie_crew` | Relaciona cada película con las personas que participaron en el equipo técnico. |
+
+**Justificación de la descomposición**
+La descomposición fue necesaria porque en el dataset original varias columnas contenían información multivaluada. Por ejemplo, una película podía tener varios géneros dentro de una misma columna, varias compañías productoras, varios países de producción y varias palabras clave.
+Si esta información se mantuviera dentro de una sola tabla, se repetirían datos y sería más difícil hacer consultas. Por ejemplo, el nombre de un género como `Drama` aparecería repetido muchas veces en diferentes películas. Lo mismo sucedería con compañías, países, keywords y personas.
+Al separar estas entidades en tablas independientes, cada dato se almacena una sola vez y las relaciones se manejan mediante tablas intermedias. Esto mejora la organización de la base, reduce redundancia y facilita el análisis de patrones.
+
+**Dependencias funcionales principales**
+A partir del diseño normalizado, se identificaron las siguientes dependencias funcionales principales:
+| Tabla | Dependencia funcional | Explicación |
+|---|---|---|
+| `core.movies` | `movie_id → adult, budget, imdb_id, original_language, original_title, overview, popularity, release_date, revenue, runtime, status, vote_average, vote_count` | Cada `movie_id` identifica de manera única a una película y determina sus atributos principales. |
+| `core.persons` | `person_id → gender, name` | Cada `person_id` identifica a una persona y determina su nombre y género registrado. |
+| `core.genres` | `genre_id → name` | Cada `genre_id` identifica un género específico. |
+| `core.keywords` | `keyword_id → name` | Cada `keyword_id` identifica una palabra clave específica. |
+| `core.companies` | `company_id → name` | Cada `company_id` identifica una compañía productora. |
+| `core.countries` | `iso_3166_1 → name` | Cada código `iso_3166_1` identifica un país de producción. |
+| `core.movie_cast` | `(movie_id, person_id) → character, cast_id` | La combinación de película y persona determina el personaje y el identificador de reparto. |
+| `core.movie_crew` | `(movie_id, person_id) → department, job` | La combinación de película y persona determina el departamento y trabajo realizado en el equipo técnico. |
+
+**Dependencias multivaluadas no triviales**
+También se identificaron dependencias multivaluadas, ya que una película puede estar relacionada con varios valores independientes. Por ejemplo, una película puede tener varios géneros y también varias compañías productoras, pero los géneros no dependen de las compañías ni las compañías dependen de los géneros.
+Las principales dependencias multivaluadas son:
+| Dependencia multivaluada | Explicación |
+|---|---|
+| `movie_id →→ genre_id` | Una película puede tener varios géneros. |
+| `movie_id →→ keyword_id` | Una película puede tener varias palabras clave. |
+| `movie_id →→ company_id` | Una película puede tener varias compañías productoras. |
+| `movie_id →→ iso_3166_1` | Una película puede estar asociada con varios países de producción. |
+| `movie_id →→ person_id` en reparto | Una película puede tener varios actores. |
+| `movie_id →→ person_id` en equipo técnico | Una película puede tener varios integrantes del equipo técnico. |
+Estas dependencias multivaluadas justifican la creación de tablas intermedias como `movie_genres`, `movie_keywords`, `movie_companies`, `movie_countries`, `movie_cast` y `movie_crew`.
+Si estas relaciones se dejaran dentro de una sola tabla, se generarían repeticiones innecesarias. Por ejemplo, si una película tiene varios géneros y varias compañías productoras, combinar todo en una misma tabla produciría muchas filas repetidas para la misma película. Por eso se separaron en relaciones independientes.
+
+
 ###Consultas
 
 ### Sesgo de Género en la Dirección Cinematográfica
