@@ -592,7 +592,7 @@ LIMIT 10;
 | ta (Tamil) | 26 | $5,864,075 | $19,288,462 |
 | ko (Coreano) | 25 | $8,680,960 | $27,548,102 |
 
-Los resultados revelan un dominio absoluto del inglés en la industria cinematográfica: las películas en inglés representan el **83% del total** con datos financieros disponibles y reciben un presupuesto promedio **casi 5 veces mayor** que el Hindi (segundo idioma más frecuente). El revenue promedio del inglés ($98.1M) es también el más alto, seguido sorprendentemente por el Chino ($75.3M) y el Japonés ($56.3M), lo que sugiere que los mercados asiáticos generan retornos considerables a pesar de recibir menores presupuestos. El español, siendo uno de los idiomas más hablados del mundo, aparece con apenas 38 películas y un presupuesto promedio muy bajo ($7.4M), lo que evidencia una subrepresentación significativa de la industria hispanohablante.
+El análisis confirma la hegemonía del inglés en el cine, concentrando el 83% de la producción con datos financieros y presupuestos cinco veces superiores a los del hindi. Sin embargo, destaca la eficiencia de los mercados asiáticos: el chino y el japonés logran los mayores ingresos tras el inglés, pese a contar con menos inversión. En contraste, el español muestra una marcada infrarrepresentación, con solo 38 filmes y una inversión promedio de apenas $7.4M, una cifra reducida frente a su alcance global.
 
 ### Países que más producen y su revenue promedio
 
@@ -631,7 +631,7 @@ LIMIT 15;
 | **Ireland** | 45 | $38,797,034 | $20,266,905 |
 | **Belgium** | 41 | $27,904,413 | $18,138,554 |
 
-Los datos muestran que Estados Unidos lidera por un volumne masivo con más de 4 mil películas, manteniendo un buen balance entre presupuesto y ganancias. Sin embargo, en términos de eficiencia de ingresos, China destaca con el promedio de ingresos más alto superando incluso al de Estados Unidos. El caso de India resalta pues a pesar de tener uno de los presupuestos más bajo, logra triplicar sus ingresos; en contraste, mercados europeos como Francia y España tienen un presupuesto más elevado pero no logran tan fácilmente duplicar o triplicar sus ingresos.
+Mientras que Estados Unidos ejerce una hegemonía cuantitativa con más de 4,000 títulos y un sólido equilibrio financiero, el análisis de rentabilidad revela dinámicas geográficas opuestas. China emerge como el mercado más eficiente, logrando un promedio de ingresos que supera incluso al estadounidense, mientras que India destaca por su capacidad de optimización, logrando triplicar su inversión pese a manejar presupuestos considerablemente bajos. En contraste, el modelo europeo representado por Francia y España muestra una vulnerabilidad financiera: a pesar de contar con presupuestos más holgados que el mercado indio, sus producciones encuentran mayores dificultades para duplicar o triplicar sus retornos, evidenciando una brecha en la eficiencia comercial frente a las potencias asiáticas y norteamericanas.
 
 ### Países con mayor y menor presupuesto de producción
 
@@ -734,7 +734,7 @@ ORDER BY presupuesto_promedio DESC;
 | *Documentary* | 59 | $4,316,854 | $17,556,358 | 6.68 |
 | *Foreign* | 33 | $3,631,380 | $4,193,511 | 5.38 |
 
-Los datos muestran un sesgo hacia los géneros de entretenimiento masivo como Aventura y Animation, que manejan los presupuestos más altos y generan los retornos más grandes, confirmando que la industria prioriza el espectáculo visual por su rentabilidad global. Es curioso que los géneros con presupuestos más modestos, como Historia y Documentales, suelen obtener mejores calificaciones promedio, lo que sugiere que el éxito comercial no siempre va de la mano con la apreciación crítica. 
+El análisis evidencia una clara priorización industrial hacia el espectáculo visual, donde los géneros de Aventura y Animación concentran las mayores inversiones y retornos económicos a nivel global. Sin embargo, esta apuesta por el entretenimiento masivo contrasta con la valoración cualitativa de las obras: géneros con presupuestos más austeros, como Historia y Documental, logran consistentemente las calificaciones más altas de la audiencia y la crítica. Esta disparidad confirma que, en la industria cinematográfica, la rentabilidad financiera y el prestigio artístico transitan por caminos paralelos, sugiriendo que la apreciación crítica suele florecer donde la presión del éxito comercial es menos asfixiante.
 
 ### Relación presupuesto/revenue por género (rentabilidad)
 
@@ -776,7 +776,7 @@ ORDER BY roi_promedio DESC;
 | *Western* | 89 | 4.21 |
 | *Foreign* | 33 | 3.16 |
 
-Los datos de la tabla muestran un sesgo estadístico: géneros como War o History tienen ROIs inflados por películas de nicho con presupuestos mínimos que logran recaudaciones considerables. Por el contraio, Animation y Sci-Fi aparecen al final porque sus costos de producción son tan masivos que el margen de ganancia porcentual es mucho menor, demostrando que el cine más 'humano' es un mejor negocio y menos dependiente de millones de efectos visuales.
+Los datos revelan una paradoja financiera en la industria: mientras géneros como **Guerra e Historia** muestran un ROI inflado gracias a producciones de nicho que logran retornos notables con inversiones mínimas, los sectores de **Animación y Ciencia Ficción** presentan márgenes porcentuales mucho menores debido a sus exorbitantes costos de producción. Este sesgo estadístico sugiere que el cine de corte más "humano" representa, en realidad, un modelo de negocio más eficiente y sostenible, al no depender de presupuestos multimillonarios ni de una saturación de efectos visuales para alcanzar la rentabilidad.
 
 ### Películas de adultos con mayor o menor presupuesto
 
@@ -795,4 +795,525 @@ GROUP BY adult;
 | *false* | 21,623,516.4 |
 | *true* | 750,000 |
 
-Los resultados de la consulta muestran que las películas para todo público tienen un presupuesto promedio infinitamente superior al contenido exclusivo para adultos. Esto se debe probablemente a que las grandes producciones animadas están dirigidas a todo público y por una consulta anterior sabemos que tienen un presupuesto de producción altísimo (por el costo de animación).
+El análisis financiero revela una brecha presupuestaria abismal entre las producciones para todos los públicos y el contenido exclusivo para adultos. Esta disparidad encuentra su origen en el peso de las grandes producciones animadas, las cuales, al estar diseñadas para una audiencia universal, demandan inversiones masivas debido a los elevados costos técnicos de la animación. Así, el mercado prioriza el financiamiento de contenidos familiares por su capacidad de escala, dejando a las categorías restringidas con presupuestos significativamente más austeros en comparación.
+
+## Diversidad de idiomas por década
+
+La consulta analiza cómo ha evolucionado la cantidad de idiomas distintos presentes en las películas a lo largo de las décadas, además de mostrar el crecimiento en el número total de producciones cinematográficas.
+
+```sql
+SELECT 
+    (EXTRACT(YEAR FROM release_date) / 10 * 10)::INT AS decada,
+    COUNT(DISTINCT original_language) AS idiomas_distintos,
+    COUNT(*) AS total_peliculas
+FROM core.movies
+WHERE release_date IS NOT NULL
+GROUP BY decada
+ORDER BY decada;
+```
+
+| decada | idiomas_distintos | total_peliculas |
+|--------|-------------------|-----------------|
+| 1874 | 1 | 1 |
+| 1888 | 1 | 2 |
+| 1929 | 9 | 76 |
+| 1955 | 17 | 209 |
+| 1965 | 23 | 247 |
+| 1972 | 25 | 381 |
+| 1984 | 26 | 361 |
+| 1997 | 29 | 659 |
+| 2004 | 38 | 990 |
+| 2009 | 41 | 1579 |
+| 2014 | 48 | 1973 |
+
+El análisis histórico refleja una correlación directa entre la expansión de la industria cinematográfica y su diversificación lingüística. Mientras que las primeras décadas estuvieron marcadas por el predominio de apenas un par de idiomas debido al limitado volumen de producción, la segunda mitad del siglo XX dio paso a una internacionalización acelerada. Este fenómeno de globalización cultural alcanzó su apogeo hacia 2014, año en el que se registraron casi 2,000 películas en 48 idiomas distintos, consolidando un ecosistema donde la pluralidad de voces y mercados locales ha transformado el cine en una industria verdaderamente multicultural.
+
+## Evolución de directoras por década
+
+La consulta analiza la participación de mujeres directoras en la industria cinematográfica a lo largo del tiempo, mostrando cuántas directoras hubo por década y qué porcentaje representan del total de directores registrados.
+
+```sql
+SELECT 
+    (EXTRACT(YEAR FROM m.release_date) / 10 * 10)::INT AS decada,
+    COUNT(*) AS total_directores,
+    SUM(CASE WHEN p.gender = 1 THEN 1 ELSE 0 END) AS directoras_mujeres,
+    ROUND(SUM(CASE WHEN p.gender = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS porcentaje_mujeres
+FROM core.movie_crew mc
+JOIN core.persons p ON p.person_id = mc.person_id
+JOIN core.movies m ON m.movie_id = mc.movie_id
+WHERE mc.job = 'Director'
+  AND m.release_date IS NOT NULL
+GROUP BY decada
+ORDER BY decada;
+```
+
+| decada | total_directores | directoras_mujeres | porcentaje_mujeres |
+|--------|------------------|--------------------|--------------------|
+| 1903 | 23 | 1 | 4.35 |
+| 1916 | 37 | 2 | 5.41 |
+| 1931 | 102 | 3 | 2.94 |
+| 1966 | 323 | 7 | 2.17 |
+| 1977 | 349 | 9 | 2.58 |
+| 1985 | 387 | 14 | 3.62 |
+| 1995 | 644 | 40 | 6.21 |
+| 1998 | 720 | 48 | 6.67 |
+| 2000 | 803 | 52 | 6.48 |
+| 2009 | 1648 | 103 | 6.25 |
+| 2011 | 1772 | 107 | 6.04 |
+| 2017 | 572 | 44 | 7.69 |
+
+La evolución histórica de la dirección cinematográfica revela una exclusión sistemática de las mujeres, cuya participación se mantuvo estancada cerca del 0% durante gran parte del siglo XX. No fue sino hasta la década de los noventa cuando se inició un crecimiento sostenido en la incursión femenina tras las cámaras. Si bien el liderazgo masculino continúa siendo predominante, las cifras recientes reflejan una tendencia hacia una mayor apertura y representatividad, alcanzando en 2017 un hito histórico con un 7.69% de mujeres directoras, la cifra más alta registrada hasta la fecha.
+
+## Presupuesto promedio por década
+
+La consulta analiza cómo han evolucionado los presupuestos y ganancias promedio de las películas a lo largo de las décadas, permitiendo observar el crecimiento económico de la industria cinematográfica.
+
+```sql
+SELECT 
+    (EXTRACT(YEAR FROM release_date) / 10 * 10)::INT AS decada,
+    COUNT(*) AS total_peliculas,
+    ROUND(AVG(budget)::NUMERIC) AS presupuesto_promedio,
+    ROUND(AVG(revenue)::NUMERIC) AS revenue_promedio
+FROM core.movies
+WHERE release_date IS NOT NULL
+  AND budget > 0 AND revenue > 0
+GROUP BY decada
+ORDER BY decada;
+```
+
+| decada | total_peliculas | presupuesto_promedio | revenue_promedio |
+|--------|-----------------|----------------------|------------------|
+| 1915 | 2 | 58656 | 5568683 |
+| 1939 | 6 | 1976896 | 74864031 |
+| 1950 | 6 | 2030964 | 46465074 |
+| 1965 | 9 | 7500000 | 70203538 |
+| 1977 | 21 | 7457143 | 90184690 |
+| 1989 | 62 | 17878241 | 76151000 |
+| 1995 | 101 | 28109598 | 75818958 |
+| 2000 | 133 | 37540376 | 85955913 |
+| 2009 | 216 | 36684574 | 103897981 |
+| 2012 | 209 | 38310408 | 120521174 |
+| 2015 | 211 | 36869278 | 132780617 |
+| 2017 | 71 | 60749796 | 210284083 |
+
+Los resultados muestran un crecimiento constante tanto en el presupuesto promedio como en las ganancias promedio de las películas con el paso del tiempo. Las primeras producciones cinematográficas manejaban presupuestos relativamente bajos, mientras que las películas modernas alcanzan inversiones multimillonarias. A partir de los años ochenta y noventa se observa un incremento mucho más acelerado, relacionado con el auge de los blockbusters, los efectos especiales y la globalización del mercado cinematográfico. La década más reciente destaca por tener los presupuestos y revenues promedio más altos, reflejando el enorme impacto económico de la industria del cine contemporáneo.
+
+## Mes de estreno y su impacto en revenue
+
+La consulta analiza cómo influye el mes de estreno de una película en sus ingresos promedio, identificando las temporadas más rentables para la industria cinematográfica.
+
+```sql
+SELECT 
+    EXTRACT(MONTH FROM release_date) AS mes,
+    TO_CHAR(release_date, 'Month') AS nombre_mes,
+    COUNT(*) AS total_peliculas,
+    ROUND(AVG(revenue)::NUMERIC) AS revenue_promedio
+FROM core.movies
+WHERE release_date IS NOT NULL AND revenue > 0
+GROUP BY mes, nombre_mes
+ORDER BY revenue_promedio DESC;
+```
+
+| mes | nombre_mes | total_peliculas | revenue_promedio |
+|-----|------------|-----------------|------------------|
+| 6 | June | 596 | 121037730 |
+| 5 | May | 585 | 98536546 |
+| 12 | December | 696 | 96173285 |
+| 11 | November | 541 | 95887328 |
+| 7 | July | 567 | 93067215 |
+| 3 | March | 564 | 66200403 |
+| 4 | April | 558 | 62062921 |
+| 2 | February | 519 | 52025178 |
+| 10 | October | 697 | 48089356 |
+| 8 | August | 658 | 45464569 |
+| 9 | September | 903 | 32732394 |
+| 1 | January | 512 | 31401516 |
+
+El análisis de estacionalidad confirma que la industria cinematográfica concentra su éxito financiero en ventanas estratégicas vinculadas a los periodos vacacionales y festivos. Junio lidera la rentabilidad promedio, seguido de cerca por mayo, diciembre y noviembre; estos meses actúan como el escenario predilecto para el lanzamiento de blockbusters que buscan maximizar el consumo masivo durante el verano y el fin de año. Por el contrario, enero y septiembre se consolidan como los periodos menos competitivos, funcionando como valles comerciales donde los ingresos promedio descienden significativamente ante la falta de estrenos de alto impacto.
+
+## Sesgos de duración
+
+La consulta analiza cómo la duración de las películas se relaciona con su presupuesto, ingresos y calificaciones promedio, agrupando las producciones en distintas categorías de tiempo.
+
+```sql
+SELECT 
+    CASE 
+        WHEN runtime < 90 THEN 'Corta (<90 min)'
+        WHEN runtime < 120 THEN 'Normal (90-120 min)'
+        WHEN runtime < 150 THEN 'Larga (120-150 min)'
+        ELSE 'Muy larga (>150 min)'
+    END AS duracion,
+    COUNT(*) AS total_peliculas,
+    ROUND(AVG(budget)::NUMERIC) AS presupuesto_promedio,
+    ROUND(AVG(revenue)::NUMERIC) AS revenue_promedio,
+    ROUND(AVG(vote_average)::NUMERIC, 2) AS calificacion_promedio
+FROM core.movies
+WHERE runtime > 0 AND budget > 0 AND revenue > 0
+GROUP BY duracion
+ORDER BY revenue_promedio DESC;
+```
+
+| duracion | total_peliculas | presupuesto_promedio | revenue_promedio | calificacion_promedio |
+|----------------------|-----------------|----------------------|------------------|-----------------------|
+| Muy larga (>150 min) | 276 | 41855273 | 158495040 | 6.95 |
+| Larga (120-150 min) | 1138 | 44306331 | 140611555 | 6.65 |
+| Normal (90-120 min) | 3315 | 28047139 | 74276564 | 6.16 |
+| Corta (<90 min) | 634 | 19256258 | 56503558 | 5.93 |
+
+Los resultados muestran que las películas más largas tienden a tener mayores presupuestos, mejores ingresos y calificaciones promedio más altas. Las producciones de más de 150 minutos destacan como las más exitosas económicamente y las mejor valoradas, probablemente porque suelen corresponder a grandes producciones épicas o franquicias importantes. En contraste, las películas cortas presentan menores presupuestos y revenues promedio, además de una calificación ligeramente inferior.
+
+## Relación entre popularidad y calificación
+
+La consulta analiza cómo se relacionan las calificaciones de las películas con su nivel de popularidad e ingresos promedio, agrupando las producciones según rangos de evaluación.
+
+```sql
+SELECT 
+    CASE 
+        WHEN vote_average >= 8 THEN 'Excelente (8-10)'
+        WHEN vote_average >= 6 THEN 'Buena (6-8)'
+        WHEN vote_average >= 4 THEN 'Regular (4-6)'
+        ELSE 'Mala (0-4)'
+    END AS rango_calificacion,
+    COUNT(*) AS total_peliculas,
+    ROUND(AVG(popularity)::NUMERIC, 2) AS popularidad_promedio,
+    ROUND(AVG(revenue)::NUMERIC) AS revenue_promedio
+FROM core.movies
+WHERE vote_average > 0
+GROUP BY rango_calificacion
+ORDER BY rango_calificacion DESC;
+```
+
+| rango_calificacion | total_peliculas | popularidad_promedio | revenue_promedio |
+|--------------------|-----------------|----------------------|------------------|
+| Regular (4-6) | 15839 | 2.77 | 47883674 |
+| Mala (0-4) | 2343 | 1.20 | 9425358 |
+| Excelente (8-10) | 1886 | 1.95 | 113904559 |
+| Buena (6-8) | 22311 | 3.66 | 80492144 |
+
+Los datos establecen una correlación directa entre la calidad percibida y el rendimiento financiero: las películas calificadas como "Excelente" lideran los ingresos promedio, mientras que las producciones "Malas" sufren el castigo del mercado con los niveles más bajos de popularidad y recaudación. Sin embargo, emerge un matiz interesante en la categoría "Buena", que ostenta la popularidad promedio más alta de todas. Este fenómeno sugiere que los grandes éxitos de consumo masivo no requieren necesariamente la excelencia crítica para triunfar, sino que encuentran un "punto dulce" donde el equilibrio entre la aceptación del público y un desempeño comercial sólido garantiza su dominio en la conversación global.
+
+## Religión y presupuesto cinematográfico
+
+La consulta analiza si existe algún sesgo en los presupuestos de películas que mencionan ciertas religiones dentro de sus keywords, comparando el total invertido en producciones relacionadas con cristianismo, islam y budismo.
+
+```sql
+SELECT 
+    mk.keyword_id,
+    SUM(m.budget) as suma_total
+FROM core.movies m
+JOIN core.movie_keywords mk ON mk.movie_id = m.movie_id
+WHERE mk.keyword_id IN (186, 187, 188) 
+  AND m.budget IS NOT NULL
+GROUP BY mk.keyword_id
+ORDER BY suma_total ASC;
+```
+
+| keyword_id | suma_total |
+|------------|------------|
+| 188 | 151300000 |
+| 187 | 154800000 |
+| 186 | 629000000 |
+
+El análisis revela una disparidad significativa en el financiamiento cinematográfico según el trasfondo religioso de las obras. Las producciones vinculadas al cristianismo concentran un volumen de inversión drásticamente superior en comparación con aquellas centradas en el islam o el budismo. Esta brecha financiera sugiere una hegemonía de las narrativas cristianas en los circuitos comerciales, impulsada probablemente por la solidez de la industria occidental y una estrategia de mercado que prioriza historias con mayor arraigo cultural en las regiones que históricamente dominan la producción de alto presupuesto.
+
+## Sesgo de longevidad y “Ageism”
+
+La consulta analiza la duración promedio de las carreras cinematográficas de las personas según su género, calculando cuántos años transcurren entre su primera y última aparición en películas registradas.
+
+```sql
+SELECT 
+    core.persons.gender,
+    ROUND(AVG(subconsulta_carrera.años_duracion), 2) AS años_activos_promedio,
+    COUNT(core.persons.person_id) AS total_personas
+FROM core.persons
+JOIN (
+    SELECT 
+        core.movie_cast.person_id,
+        MAX(EXTRACT(YEAR FROM core.movies.release_date)) - MIN(EXTRACT(YEAR FROM core.movies.release_date)) AS años_duracion
+    FROM core.movie_cast
+    JOIN core.movies ON core.movie_cast.movie_id = core.movies.movie_id
+    WHERE core.movies.release_date IS NOT NULL
+    GROUP BY core.movie_cast.person_id
+) AS subconsulta_carrera 
+ON core.persons.person_id = subconsulta_carrera.person_id
+WHERE core.persons.gender IN (1, 2)
+GROUP BY core.persons.gender;
+```
+
+| gender | años_activos_promedio | total_personas |
+|--------|-----------------------|----------------|
+| 1 | 7.95 | 25741 |
+| 2 | 10.48 | 38392 |
+
+Los hallazgos evidencian una brecha estructural en la longevidad de las trayectorias profesionales dentro del cine según el género. Mientras que las personas identificadas con el gender = 2 logran mantener carreras más extensas con un promedio de 10.48 años, el grupo de gender = 1 presenta una vida laboral significativamente más corta, promediando apenas 7.95 años. Esta disparidad de casi tres años sugiere la presencia de sesgos de permanencia que condicionan la estabilidad laboral, indicando que ciertos perfiles enfrentan barreras sistémicas que dificultan la consolidación de carreras prolongadas en comparación con sus homólogos.
+
+## Sesgo de “Tokenismo” en el reparto
+
+La consulta analiza la representación de género dentro del reparto de películas cuya figura principal o protagonista es mujer, evaluando si existe un balance equitativo entre actores y actrices en estas producciones.
+
+```sql
+WITH PelisProtagonistaFemenina AS (
+    SELECT movie_id
+    FROM (
+        SELECT 
+            core.movie_cast.movie_id, 
+            core.persons.gender, 
+            ROW_NUMBER() OVER(
+                PARTITION BY core.movie_cast.movie_id 
+                ORDER BY core.movie_cast.cast_id ASC
+            ) AS rango_reparto
+        FROM core.movie_cast
+        JOIN core.persons 
+            ON core.movie_cast.person_id = core.persons.person_id
+    ) AS ranking_cast
+    WHERE ranking_cast.rango_reparto = 1 
+      AND ranking_cast.gender = 1
+)
+
+SELECT 
+    core.persons.gender,
+    COUNT(*) AS total_actores,
+    ROUND(
+        COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 
+        2
+    ) AS porcentaje
+FROM core.movie_cast
+JOIN PelisProtagonistaFemenina 
+    ON core.movie_cast.movie_id = PelisProtagonistaFemenina.movie_id
+JOIN core.persons 
+    ON core.movie_cast.person_id = core.persons.person_id
+WHERE core.persons.gender IN (1, 2)
+GROUP BY core.persons.gender;
+```
+
+| gender | total_actores | porcentaje |
+|--------|---------------|------------|
+| 1 | 39599 | 44.00 |
+| 2 | 50389 | 56.00 |
+
+El análisis revela que el protagonismo femenino no garantiza la paridad en el conjunto de la obra: incluso en películas encabezadas por mujeres, la composición del reparto mantiene una predominancia masculina. Con una distribución del 56% frente al 44% a favor de los actores, los datos sugieren que la elección de una protagonista es un avance focalizado que no altera necesariamente la estructura demográfica del resto del elenco, evidenciando una resistencia a la representación equilibrada de género en los roles secundarios y de reparto.
+
+## Sesgo de roles de poder en el crew cinematográfico
+
+La consulta analiza la participación femenina en puestos clave dentro de la producción cinematográfica, evaluando la representación de mujeres en cargos de alto nivel como dirección, producción, edición, escritura y fotografía.
+
+```sql
+SELECT 
+    core.movie_crew.job,
+    COUNT(*) FILTER (WHERE core.persons.gender = 1) AS total_mujeres,
+    COUNT(*) FILTER (WHERE core.persons.gender = 2) AS total_hombres,
+    ROUND(
+        COUNT(*) FILTER (WHERE core.persons.gender = 1) * 100.0 / COUNT(*), 
+        2
+    ) AS porcentaje_mujeres
+FROM core.movie_crew
+JOIN core.persons 
+    ON core.movie_crew.person_id = core.persons.person_id
+WHERE core.movie_crew.job IN (
+    'Director', 
+    'Producer', 
+    'Editor', 
+    'Writer', 
+    'Director of Photography'
+)
+GROUP BY core.movie_crew.job
+ORDER BY porcentaje_mujeres ASC;
+```
+
+| job | total_mujeres | total_hombres | porcentaje_mujeres |
+|-------------------------|---------------|---------------|--------------------|
+| Director of Photography | 263 | 12215 | 1.32 |
+| Director | 1848 | 26716 | 3.88 |
+| Writer | 805 | 5613 | 4.71 |
+| Producer | 2688 | 16509 | 7.22 |
+| Editor | 1784 | 9323 | 8.08 |
+
+Los resultados muestran una fuerte desigualdad de género en los puestos de mayor poder dentro de la industria cinematográfica. Los cargos técnicos y de liderazgo continúan estando ampliamente dominados por hombres, especialmente en áreas como dirección de fotografía y dirección general. Aunque puestos como edición y producción presentan una participación femenina ligeramente mayor, los porcentajes siguen siendo bajos, evidenciando una subrepresentación persistente de mujeres en roles clave del crew cinematográfico.
+
+## Sesgo de centralización en la industria cinematográfica
+
+La consulta analiza qué porcentaje de los ingresos totales de la industria cinematográfica está concentrado en las principales compañías productoras, permitiendo identificar posibles patrones de oligopolio dentro del mercado.
+
+```sql
+WITH IngresoGlobal AS (
+    SELECT SUM(core.movies.revenue) AS total_mundial 
+    FROM core.movies 
+    WHERE core.movies.revenue > 0
+)
+
+SELECT 
+    core.companies.name,
+    SUM(core.movies.revenue) AS revenue_empresa,
+    ROUND(
+        (SUM(core.movies.revenue) * 100.0 / 
+        (SELECT total_mundial FROM IngresoGlobal)), 
+        2
+    ) AS porcentaje_mercado
+FROM core.companies
+JOIN core.movie_companies 
+    ON core.companies.company_id = core.movie_companies.company_id
+JOIN core.movies 
+    ON core.movie_companies.movie_id = core.movies.movie_id
+WHERE core.movies.revenue > 0 
+GROUP BY core.companies.name
+ORDER BY revenue_empresa DESC 
+LIMIT 10;
+```
+
+| name | revenue_empresa | porcentaje_mercado |
+|----------------------------------------|-----------------|--------------------|
+| Warner Bros. | 63525187272 | 12.47 |
+| Universal Pictures | 55259190410 | 10.85 |
+| Paramount Pictures | 48769399614 | 9.57 |
+| Twentieth Century Fox Film Corporation | 47687746332 | 9.36 |
+| Walt Disney Pictures | 40837270159 | 8.02 |
+| Columbia Pictures | 32279735705 | 6.34 |
+| New Line Cinema | 22173391499 | 4.35 |
+| Amblin Entertainment | 17343720181 | 3.40 |
+| DreamWorks SKG | 15475754744 | 3.04 |
+| Dune Entertainment | 15003789066 | 2.95 |
+
+Los hallazgos confirman una estructura oligopólica en la industria cinematográfica, donde la riqueza y el alcance se concentran en un reducido grupo de corporaciones. Gigantes como Warner Bros., Universal y Paramount no solo acaparan la mayor parte del mercado global, sino que su dominio económico les otorga un control casi absoluto sobre los canales de distribución. Esta centralización de poder permite a estas pocas empresas actuar como filtros culturales, dictando las tendencias y definiendo el tipo de contenidos que logran visibilidad y éxito comercial a escala mundial.
+
+## Sesgo de género en el departamento de escritura
+
+La consulta analiza la representación de género dentro del departamento de Writing, comparando la cantidad de escritores y escritoras junto con la calificación promedio de las películas en las que participaron.
+
+```sql
+SELECT 
+    core.persons.gender,
+    COUNT(core.movie_crew.person_id) AS total_escritores,
+    ROUND(AVG(core.movies.vote_average)::numeric, 2) AS que_tan_buena_es_la_peli
+FROM core.movie_crew
+JOIN core.persons 
+    ON core.movie_crew.person_id = core.persons.person_id
+JOIN core.movies 
+    ON core.movie_crew.movie_id = core.movies.movie_id
+WHERE core.movie_crew.department = 'Writing' 
+  AND core.persons.gender IN (1, 2)
+GROUP BY core.persons.gender;
+```
+
+| gender | total_escritores | que_tan_buena_es_la_peli |
+|--------|------------------|--------------------------|
+| 1 | 2306 | 5.79 |
+| 2 | 18616 | 5.82 |
+
+Los hallazgos evidencian una brecha de género estructural en los departamentos de guion, donde la presencia masculina supera drásticamente a la femenina en roles de escritura. No obstante, el análisis de desempeño cualitativo revela que las calificaciones promedio de las obras son prácticamente idénticas, independientemente del género de quien las escribe. Esta paridad en la recepción crítica demuestra que la disparidad en la participación no responde a una diferencia en la calidad del trabajo, sino a barreras históricas de acceso y representación que continúan condicionando quién cuenta las historias en la industria cinematográfica.
+
+## Sesgo de rentabilidad por idioma original (ROI)
+
+La consulta analiza si las películas producidas en distintos idiomas presentan diferencias en su retorno de inversión promedio, comparando qué tan rentables son proporcionalmente respecto a su presupuesto.
+
+```sql
+SELECT 
+    core.movies.original_language,
+    COUNT(core.movies.movie_id) AS total_peliculas,
+    ROUND(
+        AVG(core.movies.revenue / NULLIF(core.movies.budget, 0)), 
+        2
+    ) AS retorno_inversion_promedio
+FROM core.movies
+WHERE core.movies.budget > 1000000 
+  AND core.movies.revenue > 0
+GROUP BY core.movies.original_language
+HAVING COUNT(core.movies.movie_id) > 5
+ORDER BY retorno_inversion_promedio DESC;
+```
+
+| original_language | total_peliculas | retorno_inversion_promedio |
+|-------------------|-----------------|----------------------------|
+| zh | 40 | 5.93 |
+| sv | 7 | 4.71 |
+| te | 6 | 4.50 |
+| de | 21 | 4.48 |
+| ko | 17 | 4.35 |
+| es | 36 | 3.64 |
+| hi | 89 | 3.62 |
+| ja | 34 | 3.24 |
+| en | 4425 | 3.19 |
+| ta | 17 | 2.88 |
+| fr | 81 | 2.06 |
+| it | 26 | 1.88 |
+| ru | 64 | 1.78 |
+| da | 11 | 1.55 |
+
+Los hallazgos confirman que la desigualdad en la contratación de guionistas no guarda relación con la calidad del material. Mientras la presencia masculina domina numéricamente, la calificación promedio de las obras es paritaria. Esto evidencia que la disparidad responde a un problema de representación y acceso sistémico, y no a una diferencia en el desempeño creativo.
+
+## Sesgo de representación en el top de popularidad
+
+La consulta analiza el género de los protagonistas principales en las 100 películas más populares, utilizando el primer integrante del cast (`cast_id`) como referencia del personaje principal.
+
+```sql
+WITH TopCienPopulares AS (
+    SELECT core.movies.movie_id
+    FROM core.movies
+    ORDER BY core.movies.popularity DESC
+    LIMIT 100
+),
+
+ProtagonistasTop AS (
+    SELECT 
+        core.movie_cast.movie_id,
+        core.persons.gender,
+        ROW_NUMBER() OVER(
+            PARTITION BY core.movie_cast.movie_id 
+            ORDER BY core.movie_cast.cast_id ASC
+        ) AS rango
+    FROM core.movie_cast
+    JOIN core.persons 
+        ON core.movie_cast.person_id = core.persons.person_id
+    JOIN TopCienPopulares 
+        ON core.movie_cast.movie_id = TopCienPopulares.movie_id
+)
+
+SELECT 
+    gender,
+    COUNT(*) AS total_protagonistas_en_top_100
+FROM ProtagonistasTop
+WHERE rango = 1 
+  AND gender IN (1, 2)
+GROUP BY gender;
+```
+
+| gender | total_protagonistas_en_top_100 |
+|--------|--------------------------------|
+| 1 | 28 |
+| 2 | 69 |
+
+El análisis del top 100 de popularidad revela una marcada asimetría de género en los roles protagónicos. La predominancia masculina frente a una menor presencia femenina sugiere la persistencia de un sesgo de representación en las producciones de mayor impacto comercial, limitando la diversidad en el cine de alta visibilidad.
+
+## Sesgo de visibilidad: actores vs personajes con nombre
+
+La consulta analiza cuántos actores y actrices aparecen en películas sin un personaje identificado, es decir, con nombres de personaje vacíos o nulos, permitiendo observar posibles diferencias de visibilidad según género.
+
+```sql
+SELECT 
+    core.persons.gender,
+    COUNT(*) FILTER (
+        WHERE core.movie_cast.character IS NULL 
+           OR core.movie_cast.character = ''
+    ) AS personajes_sin_nombre,
+    
+    COUNT(*) AS total_apariciones,
+    
+    ROUND(
+        COUNT(*) FILTER (
+            WHERE core.movie_cast.character IS NULL 
+               OR core.movie_cast.character = ''
+        ) * 100.0 / COUNT(*), 
+        2
+    ) AS porcentaje_invisibilidad
+FROM core.movie_cast
+JOIN core.persons 
+    ON core.movie_cast.person_id = core.persons.person_id
+WHERE core.persons.gender IN (1, 2)
+GROUP BY core.persons.gender;
+```
+
+| gender | personajes_sin_nombre | total_apariciones | porcentaje_invisibilidad |
+|--------|-----------------------|-------------------|--------------------------|
+| 1 | 2707 | 111532 | 2.43 |
+| 2 | 6222 | 226071 | 2.75 |
+
+Los datos indican una brecha menor, pero perceptible, en la calidad de la representación: el grupo gender = 2 tiende a ocupar roles menos definidos con mayor frecuencia. Aunque la diferencia no es drástica, la mayor presencia de personajes sin nombre en este segmento apunta a una desigualdad persistente en la visibilidad y el protagonismo dentro de la industria.
