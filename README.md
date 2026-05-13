@@ -32,7 +32,8 @@ El conjunto de datos está dividido en varios **archivos**:
 - **archivo principal**: movies_metadata.csv, el cual tiene 45,466 tuplas y 24 atributos 
 - **2do archivo**: ratings_small.csv, el cual tiene 100,004 tuplas y 24 atributos 
 - **archivos complementarios**: keywords.csv, credits.csv, links.csv, los cuales tienen información sobre palabras clave y equipo de producción. 
-Para poder entender y realizar nuestro objetivo, el cual es encontrar sesgos, tenemos que entender los atributos y los tipos que son para poder usarlos correctamente: 
+Para poder entender y realizar nuestro objetivo, el cual es encontrar sesgos, tenemos que entender los atributos y los tipos que son para poder usarlos correctamente:
+ 
 | Atributo | Archivo | Significado |
 |---|---|---|
 | `adult` | `movies_metadata.csv` | Indica si la película está clasificada como contenido para adultos. |
