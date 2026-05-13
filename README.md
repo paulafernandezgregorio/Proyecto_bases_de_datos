@@ -331,7 +331,7 @@ Esta limpieza fue necesaria para evitar conteos inflados. Por ejemplo, si una pe
 | credits_crew | 464,314 | 464,079 |
 | keywords_keywords | 158,680 | 156,559 |
 
-###Consultas
+## D) Consultas 
 
 ### Sesgo de Género en la Dirección Cinematográfica
 
@@ -426,6 +426,64 @@ ORDER BY total DESC;
 
 A diferencia de la dirección donde las mujeres representaban apenas el 3.88%, en el reparto la presencia femenina sube al **19.90%**, lo que sigue siendo significativamente menor que la masculina del 40.33%. Esto indica que aunque las mujeres tienen mayor acceso a roles de actuación que a roles de dirección, la brecha sigue siendo considerable: por cada actriz hay aproximadamente 2 actores hombres. El alto porcentaje de género no especificado (39.77%) nuevamente limita el análisis completo, pero la tendencia es clara: la industria favorece históricamente la participación masculina tanto frente como detrás de las cámaras.
 
+### Sesgos de género en los distintos departamentos de la industria
+
+La siguiente query analiza la distribución de género dentro de todos los departamentos de la industria cinematográfica, comparando la cantidad de mujeres y hombres en cada departamento.
+
+```sql
+SELECT mc.department,
+       p.gender,
+       COUNT(*) as total_personas,
+       RANK() OVER(PARTITION BY mc.department ORDER BY COUNT(*) DESC) as lugar_ocupado
+FROM core.movie_crew mc
+JOIN core.persons p ON mc.person_id = p.person_id
+GROUP BY mc.department, p.gender
+ORDER BY mc.department, lugar_ocupado;
+```
+
+Si gender es igual 0 significa que el género no está especificado, que sea igual a 1 significa que son mujeres y que sea igual a 2 significa que son hombres.
+
+| department | gender | total_person | lugar_ocupado |
+| :--- | :--- | :--- | :--- |
+| Actors | 0 | 11 | 1 |
+| Actors | 2 | 6 | 2 |
+| Actors | 1 | 2 | 3 |
+| Art | 0 | 26086 | 1 |
+| Art | 2 | 11372 | 2 |
+| Art | 1 | 2827 | 3 |
+| Camera | 0 | 18160 | 1 |
+| Camera | 2 | 14590 | 2 |
+| Camera | 1 | 412 | 3 |
+| Costume & M | 0 | 22857 | 1 |
+| Costume & M | 1 | 4626 | 2 |
+| Costume & M | 2 | 2619 | 3 |
+| Crew | 0 | 24510 | 1 |
+| Crew | 2 | 5856 | 2 |
+| Crew | 1 | 776 | 3 |
+| Directing | 2 | 28027 | 1 |
+| Directing | 0 | 25630 | 2 |
+| Directing | 1 | 3155 | 3 |
+| Editing | 0 | 16091 | 1 |
+| Editing | 2 | 10007 | 2 |
+| Editing | 1 | 1971 | 3 |
+| Lighting | 0 | 4385 | 1 |
+| Lighting | 2 | 414 | 2 |
+| Lighting | 1 | 11 | 3 |
+| Production | 0 | 44793 | 1 |
+| Production | 2 | 29703 | 2 |
+| Production | 1 | 11999 | 3 |
+| Sound | 0 | 31135 | 1 |
+| Sound | 2 | 16546 | 2 |
+| Sound | 1 | 1010 | 3 |
+| Visual Effects | 0 | 12809 | 1 |
+| Visual Effects | 2 | 1511 | 2 |
+| Visual Effects | 1 | 120 | 3 |
+| Writing | 0 | 27638 | 1 |
+| Writing | 2 | 18616 | 2 |
+| Writing | 1 | 2306 | 3 |
+
+Basado en la tabla resultante de la consulta observamos que el género masculino (2) predomina el los departamentos de Directing y Writing. Por otro lado, en áreas como Production, Sound y Art, el volumen más alto de registros recae en la categoría de género no especificado (0), sin embargo, la cantidad de hombres sigue siendo considerablemente mayor a la de mujeres. Por último, la participación femenina (1) se mantiene como la minoría en casi todas las categorías, alcanzando su cifra más alta en Production. Concluimos entonces que en la industria cinmeatográfica predomina el género masculino en todos los departamentos.
+
 ### Sesgo de Idioma: Presupuesto y Revenue Promedio por Idioma (Top 10)
 
 La siguiente query analiza la distribución de presupuesto y revenue promedio según el idioma original de las películas, considerando únicamente aquellas con datos financieros disponibles.
@@ -460,3 +518,205 @@ LIMIT 10;
 
 Los resultados revelan un dominio absoluto del inglés en la industria cinematográfica: las películas en inglés representan el **83% del total** con datos financieros disponibles y reciben un presupuesto promedio **casi 5 veces mayor** que el Hindi (segundo idioma más frecuente). El revenue promedio del inglés ($98.1M) es también el más alto, seguido sorprendentemente por el Chino ($75.3M) y el Japonés ($56.3M), lo que sugiere que los mercados asiáticos generan retornos considerables a pesar de recibir menores presupuestos. El español, siendo uno de los idiomas más hablados del mundo, aparece con apenas 38 películas y un presupuesto promedio muy bajo ($7.4M), lo que evidencia una subrepresentación significativa de la industria hispanohablante.
 
+### Países que más producen y su revenue promedio
+
+La consulta examina el rendimiento financiero promedio de las películas segpun su país de origen, permitiendo identificar qué mercados nacionales tienen mayor abundancia en cuanto a producción y cuáles tienen una mayor eficiencia en cuanto al retorno de inversión, es decir, que países tienen mayores ganancias.
+
+```sql
+SELECT 
+    c.name AS pais,
+    COUNT(*) AS total_peliculas,
+    ROUND(AVG(m.revenue)) AS revenue_promedio,
+    ROUND(AVG(m.budget)) AS presupuesto_promedio
+FROM core.movie_countries mc
+JOIN core.countries c ON c.iso_3166_1 = mc.iso_3166_1
+JOIN core.movies m ON m.movie_id = mc.movie_id
+WHERE m.revenue > 0 AND m.budget > 0
+GROUP BY c.name
+ORDER BY total_peliculas DESC
+LIMIT 15;
+```
+
+| pais | total_peliculas | revenue_promedio | presupuesto_promedio |
+|---|---|---|---|
+| **United States** | 4,382 | $104,752,594 | $35,594,324 |
+| **United Kingdom** | 666 | $107,578,601 | $35,881,350 |
+| **France** | 367 | $51,556,917 | $24,382,993 |
+| **Germany** | 318 | $88,469,000 | $41,345,496 |
+| **Canada** | 235 | $76,355,181 | $32,511,460 |
+| **India** | 182 | $32,862,395 | $10,579,624 |
+| **Australia** | 120 | $93,099,764 | $42,207,463 |
+| **Italy** | 111 | $43,331,608 | $24,293,880 |
+| **Japan** | 87 | $87,656,169 | $29,082,325 |
+| **Russia** | 85 | $14,547,194 | $8,591,294 |
+| **Spain** | 73 | $42,903,122 | $25,472,574 |
+| **China** | 73 | $142,621,014 | $46,756,431 |
+| **Hong Kong** | 54 | $84,988,022 | $36,616,699 |
+| **Ireland** | 45 | $38,797,034 | $20,266,905 |
+| **Belgium** | 41 | $27,904,413 | $18,138,554 |
+
+Los datos muestran que Estados Unidos lidera por un volumne masivo con más de 4 mil películas, manteniendo un buen balance entre presupuesto y ganancias. Sin embargo, en términos de eficiencia de ingresos, China destaca con el promedio de ingresos más alto superando incluso al de Estados Unidos. El caso de India resalta pues a pesar de tener uno de los presupuestos más bajo, logra triplicar sus ingresos; en contraste, mercados europeos como Francia y España tienen un presupuesto más elevado pero no logran tan fácilmente duplicar o triplicar sus ingresos.
+
+### Países con mayor y menor presupuesto de producción
+
+Esta consulta permite identificar los extremos de inversión en la industria cinematográfica global, contrastando los países con los presupuesto más altos frente a aquellos con menor presupuesto.
+```sql
+-- mayor presupuesto
+WITH MayorPresupuestoPorPais AS (
+    SELECT c.name AS pais,
+           SUM(m.budget) AS presupuesto_total,
+           RANK() OVER (ORDER BY SUM(m.budget) DESC) AS ranking_mundial
+    FROM core.movie_countries mc
+    JOIN core.countries c ON mc.iso_3166_1 = c.iso_3166_1
+    JOIN core.movies m ON mc.movie_id = m.movie_id
+    WHERE m.budget > 0
+    GROUP BY c.name
+)
+SELECT pais, 
+	   presupuesto_total, 
+	   ranking_mundial
+FROM MayorPresupuestoPorPais
+WHERE ranking_mundial <= 5;
+-- menor presupuesto
+WITH MenorPresupuestoPorPais AS (
+    SELECT c.name AS pais,
+           SUM(m.budget) AS presupuesto_total,
+           RANK() OVER (ORDER BY SUM(m.budget) ASC) AS ranking_mundial
+    FROM core.movie_countries mc
+    JOIN core.countries c ON mc.iso_3166_1 = c.iso_3166_1
+    JOIN core.movies m ON mc.movie_id = m.movie_id
+    WHERE m.budget > 0
+    GROUP BY c.name
+)
+SELECT pais,
+	   presupuesto_total,
+	   ranking_mundial
+FROM MenorPresupuestoPorPais
+WHERE ranking_mundial <= 5;
+```
+
+| **pais** | **presupuesto_total** | **ranking_mundial** |
+| :--- | :--- | :--- |
+| *United States* | 1.7215E+11 | 1 |
+| *United Kingdom* | 2.6367E+10 | 2 |
+| *Germany* | 1.547E+10 | 3 |
+| *France* | 1.24E+10 | 4 |
+| *Canada* | 9,292,505,600 | 5 |
+
+| **pais** | **presupuesto_total** | **ranking_mundial** |
+| :--- | :--- | :--- |
+| *Uganda* | 200 | 1 |
+| *Kenya* | 35,000 | 2 |
+| *Afghanistan* | 46,000 | 3 |
+| *Bolivia* | 60,000 | 4 |
+| *Honduras* | 200,000 | 5 |
+| *Jamaica* | 200,000 | 5 |
+| *Cuba* | 200,000 | 5 |
+| *Nicaragua* | 200,000 | 5 |
+
+Podemos observar la enorme brecha entre los presupuesto de Estados Unidos y países como Uganda o Bolivia, esto representa un sesgo económico profundo (al menos en la industria), donde las potencias mundiales dominan la capacidad de producción y distribución global. Mientras que en las economías desarrolladas el cine es una industria de exportación masiva con presupuestos de millones, en naciones con economías emergentes o en desarrollo, las cifras sugieren producciones independientes o locales con recursos extremadamente limitados.
+
+### Sesgos de género cinematográfico: Presupuesto promedio por género cinematográfico y su calificacion
+
+La consulta muestra el desempeño financiero y la recepción crítica promedio de las películas agrupadas por género, las ordena de forma descendente según su presupuesto de producción.
+
+```sql
+SELECT 
+    g.name AS genero,
+    COUNT(*) AS total_peliculas,
+    ROUND(AVG(m.budget)) AS presupuesto_promedio,
+    ROUND(AVG(m.revenue)) AS revenue_promedio,
+    ROUND(AVG(m.vote_average)::numeric, 2) AS calificacion_promedio
+FROM core.movie_genres mg
+JOIN core.genres g ON g.genre_id = mg.genre_id
+JOIN core.movies m ON m.movie_id = mg.movie_id
+WHERE m.budget > 0 AND m.revenue > 0
+GROUP BY g.name
+ORDER BY presupuesto_promedio DESC;
+```
+
+| **genero** | **total_peliculas** | **presupuesto_promedio** | **revenue_promedio** | **calificacion_promedio** |
+| :--- | :--- | :--- | :--- | :--- |
+| *Adventure* | 957 | $63,865,792 | $205,003,134 | 6.25 |
+| *Animation* | 292 | $63,660,027 | $224,202,425 | 6.48 |
+| *Fantasy* | 510 | $61,990,664 | $198,993,331 | 6.17 |
+| *Family* | 530 | $57,989,444 | $195,559,381 | 6.19 |
+| *Science Fiction* | 634 | $52,353,195 | $152,310,137 | 6.1 |
+| *Action* | 1,414 | $49,730,128 | $139,007,314 | 6.1 |
+| *Thriller* | 1,502 | $32,363,496 | $83,893,484 | 6.17 |
+| *War* | 203 | $31,885,662 | $77,348,644 | 6.72 |
+| *History* | 235 | $30,050,228 | $61,931,948 | 6.8 |
+| *Western* | 89 | $29,583,281 | $54,520,312 | 6.66 |
+| *Mystery* | 443 | $29,511,660 | $75,343,167 | 6.34 |
+| *Comedy* | 1,851 | $28,253,421 | $83,524,445 | 6.09 |
+| *Crime* | 861 | $27,981,420 | $69,923,568 | 6.39 |
+| *Drama* | 2,583 | $22,375,742 | $57,968,003 | 6.52 |
+| *Romance* | 1,013 | $21,385,002 | $66,883,838 | 6.31 |
+| *Music* | 192 | $19,923,967 | $66,616,619 | 6.48 |
+| *Horror* | 586 | $16,375,529 | $50,859,134 | 5.83 |
+| *TV Movie* | 1 | $5,000,000 | $42,000,000 | 6.0 |
+| *Documentary* | 59 | $4,316,854 | $17,556,358 | 6.68 |
+| *Foreign* | 33 | $3,631,380 | $4,193,511 | 5.38 |
+
+Los datos muestran un sesgo hacia los géneros de entretenimiento masivo como Aventura y Animation, que manejan los presupuestos más altos y generan los retornos más grandes, confirmando que la industria prioriza el espectáculo visual por su rentabilidad global. Es curioso que los géneros con presupuestos más modestos, como Historia y Documentales, suelen obtener mejores calificaciones promedio, lo que sugiere que el éxito comercial no siempre va de la mano con la apreciación crítica. 
+
+### Relación presupuesto/revenue por género (rentabilidad)
+
+La consulta muestra la rentabilidad promedio (ROI) por género cinematográfico, calculada como la proporción entre los ingresos y el presupuesto, permitiendo identificar qué tipos de películas generan un mayor retorno por cada dólar invertido.
+
+```sql
+SELECT 
+    g.name AS genero,
+    COUNT(*) AS total_peliculas,
+    ROUND(AVG(m.revenue::NUMERIC / NULLIF(m.budget, 0)), 2) AS roi_promedio
+FROM core.movie_genres mg
+JOIN core.genres g ON g.genre_id = mg.genre_id
+JOIN core.movies m ON m.movie_id = mg.movie_id
+WHERE m.budget > 0 AND m.revenue > 0
+GROUP BY g.name
+ORDER BY roi_promedio DESC;
+```
+
+| **genero** | **total_peliculas** | **roi_promedio** |
+| :--- | :--- | :--- |
+| *War* | 203 | 20682.08 |
+| *History* | 235 | 17874.91 |
+| *Crime* | 861 | 14402.47 |
+| *Romance* | 1013 | 13275.65 |
+| *Drama* | 2583 | 10126.81 |
+| *Comedy* | 1851 | 8368.61 |
+| *Family* | 530 | 1927.32 |
+| *Horror* | 586 | 1746.95 |
+| *Adventure* | 957 | 1071.17 |
+| *Action* | 1414 | 726.06 |
+| *Thriller* | 1502 | 671.94 |
+| *Documentary* | 59 | 106 |
+| *Mystery* | 443 | 42.38 |
+| *TV Movie* | 1 | 8.4 |
+| *Animation* | 292 | 6.77 |
+| *Music* | 192 | 5.97 |
+| *Fantasy* | 510 | 5.96 |
+| *Science Fiction* | 634 | 5.28 |
+| *Western* | 89 | 4.21 |
+| *Foreign* | 33 | 3.16 |
+
+Los datos de la tabla muestran un sesgo estadístico: géneros como War o History tienen ROIs inflados por películas de nicho con presupuestos mínimos que logran recaudaciones considerables. Por el contraio, Animation y Sci-Fi aparecen al final porque sus costos de producción son tan masivos que el margen de ganancia porcentual es mucho menor, demostrando que el cine más 'humano' es un mejor negocio y menos dependiente de millones de efectos visuales.
+
+### Películas de adultos con mayor o menor presupuesto
+
+La consulta compara el presupuesto promedio entre películas clasificadas para adultos y aquellas destinadas al público general, revelando una diferencia abismal en la inversión según el tipo de contenido.
+
+```sql
+SELECT adult AS es_para_adultos, 
+	   ROUND(AVG(budget)::Numeric,2) AS presupuesto_promedio
+FROM core.movies
+WHERE budget > 0
+GROUP BY adult;
+```
+
+| **es_para_adultos** | **presupuesto_promedio** |
+| :--- | :--- |
+| *false* | 21,623,516.4 |
+| *true* | 750,000 |
+
+Los resultados de la consulta muestran que las películas para todo público tienen un presupuesto promedio infinitamente superior al contenido exclusivo para adultos. Esto se debe probablemente a que las grandes producciones animadas están dirigidas a todo público y por una consulta anterior sabemos que tienen un presupuesto de producción altísimo (por el costo de animación).
