@@ -5,8 +5,8 @@
 - Renata Pasalagua Payá, CU:218650 git: https://github.com/renatapasalagua 
 - Mariana Rendón Monroy, CU:217225 git: https://github.com/marianarendon2006
 - Nicolás Burgueño Rodríguez, CU:218065 git: https://github.com/itsGUCC1MAN
-- Gerardo Villanueva Vargas, CU:219890 git: 
-- Paula Fernández Gregorio, CU:218821 git: 
+- Gerardo Villanueva Vargas, CU:219890 git: https://github.com/geraVillV
+- Paula Fernández Gregorio, CU:218821 git: https://github.com/paulafernandezgregorio
 
 
 ---
