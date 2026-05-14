@@ -460,3 +460,6 @@ LIMIT 10;
 
 Los resultados revelan un dominio absoluto del inglés en la industria cinematográfica: las películas en inglés representan el **83% del total** con datos financieros disponibles y reciben un presupuesto promedio **casi 5 veces mayor** que el Hindi (segundo idioma más frecuente). El revenue promedio del inglés ($98.1M) es también el más alto, seguido sorprendentemente por el Chino ($75.3M) y el Japonés ($56.3M), lo que sugiere que los mercados asiáticos generan retornos considerables a pesar de recibir menores presupuestos. El español, siendo uno de los idiomas más hablados del mundo, aparece con apenas 38 películas y un presupuesto promedio muy bajo ($7.4M), lo que evidencia una subrepresentación significativa de la industria hispanohablante.
 
+***Presentación 
+Como complemento de este repositorio, aquí se encuentra la presentación del proyecto, donde se explican los objetivos, el análisis realizado y las principales conclusiones obtenidas a partir de la base de datos de películas utilizada.
+🔗 Link a la presentación: https://canva.link/oizikejuksy13w1
