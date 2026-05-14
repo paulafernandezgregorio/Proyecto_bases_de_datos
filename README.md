@@ -1302,3 +1302,9 @@ GROUP BY core.persons.gender;
 | 2 | 6222 | 226071 | 2.75 |
 
 Los datos indican una brecha menor, pero perceptible, en la calidad de la representación: el grupo gender = 2 tiende a ocupar roles menos definidos con mayor frecuencia. Aunque la diferencia no es drástica, la mayor presencia de personajes sin nombre en este segmento apunta a una desigualdad persistente en la visibilidad y el protagonismo dentro de la industria.
+
+## Presentación del Proyecto
+
+Como complemento de este repositorio, aquí se encuentra la presentación del proyecto, donde se explican los objetivos, el análisis realizado y las principales conclusiones obtenidas a partir de la base de datos de películas utilizada.
+
+🔗 **Link a la presentación:** https://canva.link/oizikejuksy13w1
